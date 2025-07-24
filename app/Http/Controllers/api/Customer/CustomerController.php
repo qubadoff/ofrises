@@ -13,10 +13,20 @@ class CustomerController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        $user =$request->user();
+        $customer = $request->user();
 
         return response()->json([
-            'customer' => $user,
+            'customer' => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'surname' => $customer->surname,
+                'email' => $customer->email,
+                'phone' => $customer->phone,
+                'birthday' => $customer->birthday,
+                'sex' => $customer->sex,
+                'photo' => url('/storage') . $customer->photo,
+                'email_verified_at' => $customer->email_verified_at,
+            ],
         ]);
     }
 
@@ -38,7 +48,7 @@ class CustomerController extends Controller
         $user->save();
 
         return response()->json([
-            'photo_url' => url('/') . '/storage/' . $newPath,
+            'photo' => url('/') . '/storage/' . $newPath,
         ]);
     }
 
@@ -53,9 +63,9 @@ class CustomerController extends Controller
             'sex' => 'sometimes|integer|in:1,3',
         ]);
 
-        $user = $request->user();
+        $customer = $request->user();
 
-        $user->update($request->only([
+        $customer->update($request->only([
             'name',
             'surname',
             'email',
@@ -65,7 +75,17 @@ class CustomerController extends Controller
         ]));
 
         return response()->json([
-            'customer' => $user
+            'customer' => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'surname' => $customer->surname,
+                'email' => $customer->email,
+                'phone' => $customer->phone,
+                'birthday' => $customer->birthday,
+                'sex' => $customer->sex,
+                'photo' => url('/storage') . $customer->photo,
+                'email_verified_at' => $customer->email_verified_at,
+            ],
         ]);
     }
 

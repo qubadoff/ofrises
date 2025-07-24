@@ -32,7 +32,17 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'customer' => $customer,
+            'customer' => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'surname' => $customer->surname,
+                'email' => $customer->email,
+                'phone' => $customer->phone,
+                'birthday' => $customer->birthday,
+                'sex' => $customer->sex,
+                'photo' => url('/storage') . $customer->photo,
+                'email_verified_at' => $customer->email_verified_at,
+            ],
         ]);
     }
 
@@ -85,7 +95,17 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'customer' => $customer
+            'customer' => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'surname' => $customer->surname,
+                'email' => $customer->email,
+                'phone' => $customer->phone,
+                'birthday' => $customer->birthday,
+                'sex' => $customer->sex,
+                'photo' => url('/storage') . $customer->photo,
+                'email_verified_at' => $customer->email_verified_at,
+            ],
         ]);
     }
     public function verifyOtp(Request $request): JsonResponse
