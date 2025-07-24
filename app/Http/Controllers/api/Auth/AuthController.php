@@ -45,7 +45,6 @@ class AuthController extends Controller
             ],
         ]);
     }
-
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -131,5 +130,66 @@ class AuthController extends Controller
         $customer->save();
 
         return response()->json(['message' => 'Email confirmation success !']);
+    }
+
+    public function requestReset(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email|exists:customers,email'
+        ]);
+
+        $customer = Customer::query()->where('email', $request->email)->first();
+
+        $otp = rand(1000, 9999);
+        $expiresAt = Carbon::now()->addMinutes(5);
+
+        $customer->otp_code = $otp;
+        $customer->otp_expires_at = $expiresAt;
+        $customer->save();
+
+        Mail::raw("Password reset OTP code: $otp", function ($message) use ($customer) {
+            $message->to($customer->email)->subject('Password reset OTP code');
+        });
+
+        return response()->json(['message' => 'The OTP code has been sent to your email !']);
+    }
+
+    public function verifyResetOtp(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp_code' => 'required'
+        ]);
+
+        $customer = Customer::query()->where('email', $request->email)->first();
+
+        if (
+            !$customer ||
+            $customer->otp_code !== $request->otp_code ||
+            now()->greaterThan($customer->otp_expires_at)
+        ) {
+            return response()->json(['message' => 'OTP code undefined or expired !'], 422);
+        }
+
+        $customer->otp_code = null;
+        $customer->otp_expires_at = null;
+        $customer->save();
+
+        return response()->json(['message' => 'OTP code has been verified !']);
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email|exists:customers,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $customer = Customer::query()->where('email', $request->email)->first();
+
+        $customer->password = Hash::make($request->password);
+        $customer->save();
+
+        return response()->json(['message' => 'The password has been reset !']);
     }
 }
