@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
@@ -82,6 +83,22 @@ class CustomerController extends Controller
             'sex' => $customer->sex,
             'photo' => url('/storage') . $customer->photo,
             'email_verified_at' => $customer->email_verified_at,
+        ]);
+    }
+
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password successfully updated',
         ]);
     }
 

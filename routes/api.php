@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [CustomerController::class, 'me']);
         Route::get('/logout', [CustomerController::class, 'logout']);
         Route::post('/updatePhoto', [CustomerController::class, 'updatePhoto']);
+        Route::post('/updatePassword', [CustomerController::class, 'updatePassword']);
         Route::post('/updateProfile', [CustomerController::class, 'updateProfile']);
     });
 });
