@@ -102,7 +102,7 @@ class AuthController extends Controller
                 'phone' => $customer->phone,
                 'birthday' => $customer->birthday,
                 'sex' => $customer->sex,
-                'photo' => url('/storage') . $customer->photo,
+                'photo' => url('/') . '/storage/' . $customer->photo,
                 'email_verified_at' => $customer->email_verified_at,
             ],
         ]);
