@@ -53,7 +53,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:customers,email',
             'phone' => 'required|string|max:20',
             'birthday' => 'required|date',
-            'sex' => 'required|integer',
+            'sex' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
             'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:10000'
         ]);
@@ -75,7 +75,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'birthday' => $request->birthday,
-            'sex' => $request->sex,
+            'sex' => intval($request->sex),
             'password' => Hash::make($request->password),
             'photo' => $photoPath,
         ]);
