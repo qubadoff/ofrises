@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\Auth\AuthController;
 use App\Http\Controllers\api\Customer\CustomerController;
+use App\Http\Controllers\api\Support\SupportController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -23,5 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/updatePhoto', [CustomerController::class, 'updatePhoto']);
         Route::post('/updatePassword', [CustomerController::class, 'updatePassword']);
         Route::post('/updateProfile', [CustomerController::class, 'updateProfile']);
+    });
+
+    Route::prefix('support')->group(function () {
+        Route::get('/contactInfo', [SupportController::class, 'contactInfo']);
+        Route::get('/faqs', [SupportController::class, 'faqs']);
+        Route::get('/privacyAndPolicy', [SupportController::class, 'privacyAndPolicy']);
     });
 });
