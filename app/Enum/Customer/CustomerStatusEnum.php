@@ -13,12 +13,15 @@ enum CustomerStatusEnum: int implements HasLabel, HasColor
 
     case PENDING = 3;
 
+    case DELETED = 4;
+
     public function getLabel(): string
     {
         return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::PENDING => 'Pending',
+            self::DELETED => 'Deleted',
         };
     }
 
@@ -26,7 +29,7 @@ enum CustomerStatusEnum: int implements HasLabel, HasColor
     {
         return match ($this) {
             self::ACTIVE => 'success',
-            self::INACTIVE => 'danger',
+            self::INACTIVE, self::DELETED => 'danger',
             self::PENDING => 'warning',
         };
     }

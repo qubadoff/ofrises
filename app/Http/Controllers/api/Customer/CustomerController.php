@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api\Customer;
 
+use App\Enum\Customer\CustomerStatusEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,8 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class CustomerController extends Controller
 {
-    public function __construct(){}
-
     public function me(Request $request): JsonResponse
     {
         $customer = $request->user();
@@ -106,5 +105,18 @@ class CustomerController extends Controller
     public function logout(Request $request): void
     {
         $request->user()->tokens()->delete();
+    }
+
+    public function deleteProfile(Request $request): JsonResponse
+    {
+        $request->user()->update([
+            'status' => CustomerStatusEnum::DELETED,
+        ]);
+
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Customer profile deleted successfully.',
+        ]);
     }
 }

@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/updatePhoto', [CustomerController::class, 'updatePhoto']);
         Route::post('/updatePassword', [CustomerController::class, 'updatePassword']);
         Route::post('/updateProfile', [CustomerController::class, 'updateProfile']);
+        Route::post('/deleteProfile', [CustomerController::class, 'deleteProfile']);
     });
 
     Route::prefix('support')->group(function () {
