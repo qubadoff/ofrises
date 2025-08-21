@@ -41,5 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/salaryType', [WorkerController::class, 'salaryType']);
         Route::get('/workExpectation', [WorkerController::class, 'workExpectation']);
         Route::get('/citizenship', [WorkerController::class, 'citizenship']);
+        Route::get('/maritalStatus', [WorkerController::class, 'maritalStatus']);
     });
 });
