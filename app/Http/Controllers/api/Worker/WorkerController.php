@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Worker;
 
 use App\Http\Controllers\Controller;
+use App\Models\CarModel;
 use App\Models\Citizenship;
 use App\Models\Currency;
 use App\Models\DriverLicense;
@@ -68,5 +69,10 @@ class WorkerController extends Controller
     public function driverLicense(): JsonResponse
     {
         return response()->json(DriverLicense::all());
+    }
+
+    public function carModels(): JsonResponse
+    {
+        return response()->json(CarModel::all());
     }
 }
