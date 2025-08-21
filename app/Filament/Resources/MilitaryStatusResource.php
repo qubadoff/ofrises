@@ -15,6 +15,9 @@ class MilitaryStatusResource extends Resource
 {
     protected static ?string $model = MilitaryStatus::class;
 
+    protected static ?string $navigationGroup = 'Workers';
+
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form

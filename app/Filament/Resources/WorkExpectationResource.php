@@ -16,6 +16,9 @@ class WorkExpectationResource extends Resource
 {
     protected static ?string $model = WorkExpectation::class;
 
+    protected static ?string $navigationGroup = 'Workers';
+
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
