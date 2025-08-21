@@ -8,6 +8,7 @@ use App\Models\Citizenship;
 use App\Models\Currency;
 use App\Models\DriverLicense;
 use App\Models\EducationType;
+use App\Models\Hobby;
 use App\Models\Language;
 use App\Models\MaritalStatus;
 use App\Models\MilitaryStatus;
@@ -86,5 +87,10 @@ class WorkerController extends Controller
     public function educationType(): JsonResponse
     {
         return response()->json(EducationType::all());
+    }
+
+    public function hobbies(): JsonResponse
+    {
+        return response()->json(Hobby::all());
     }
 }

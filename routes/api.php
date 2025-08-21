@@ -47,5 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/carModels', [WorkerController::class, 'carModels']);
         Route::get('/languages', [WorkerController::class, 'languages']);
         Route::get('/educationType', [WorkerController::class, 'educationType']);
+        Route::get('/hobbies', [WorkerController::class, 'hobbies']);
     });
 });
