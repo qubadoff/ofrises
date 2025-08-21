@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Currency;
 use App\Models\SalaryType;
 use App\Models\WorkArea;
+use App\Models\WorkExpectation;
 use App\Models\WorkType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,5 +39,10 @@ class WorkerController extends Controller
     public function salaryType(): JsonResponse
     {
         return response()->json(SalaryType::all());
+    }
+
+    public function workExpectation(): JsonResponse
+    {
+        return response()->json(WorkExpectation::all());
     }
 }
