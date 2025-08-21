@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\Worker;
 
 use App\Http\Controllers\Controller;
 use App\Models\WorkArea;
+use App\Models\WorkType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,5 +15,10 @@ class WorkerController extends Controller
         return response()->json(WorkArea::with('children')
             ->whereNull('parent_id')
             ->get());
+    }
+
+    public function workType(): JsonResponse
+    {
+        return response()->json(WorkType::all());
     }
 }
