@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Worker;
 
 use App\Http\Controllers\Controller;
+use App\Models\Citizenship;
 use App\Models\Currency;
 use App\Models\SalaryType;
 use App\Models\WorkArea;
@@ -44,5 +45,10 @@ class WorkerController extends Controller
     public function workExpectation(): JsonResponse
     {
         return response()->json(WorkExpectation::all());
+    }
+
+    public function citizenship(): JsonResponse
+    {
+        return response()->json(Citizenship::all());
     }
 }
