@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Worker;
 use App\Http\Controllers\Controller;
 use App\Models\Citizenship;
 use App\Models\Currency;
+use App\Models\DriverLicense;
 use App\Models\MaritalStatus;
 use App\Models\MilitaryStatus;
 use App\Models\SalaryType;
@@ -62,5 +63,10 @@ class WorkerController extends Controller
     public function militaryStatus(): JsonResponse
     {
         return response()->json(MilitaryStatus::all());
+    }
+
+    public function driverLicense(): JsonResponse
+    {
+        return response()->json(DriverLicense::all());
     }
 }
