@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Worker;
 
 use App\Http\Controllers\Controller;
+use App\Models\Currency;
 use App\Models\WorkArea;
 use App\Models\WorkType;
 use Illuminate\Http\JsonResponse;
@@ -20,5 +21,16 @@ class WorkerController extends Controller
     public function workType(): JsonResponse
     {
         return response()->json(WorkType::all());
+    }
+
+    public function currencies(): JsonResponse
+    {
+        $currency = Currency::query()->select('id', 'name', 'icon')->first();
+
+        return response()->json([
+            'id'   => $currency->id,
+            'name' => $currency->name,
+            'icon' => url('/') . '/storage/' . $currency->icon,
+        ]);
     }
 }

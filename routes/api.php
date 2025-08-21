@@ -37,5 +37,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('workers')->group(function () {
         Route::get('/workArea', [WorkerController::class, 'workArea']);
         Route::get('/workType', [WorkerController::class, 'workType']);
+        Route::get('/currencies', [WorkerController::class, 'currencies']);
     });
 });
