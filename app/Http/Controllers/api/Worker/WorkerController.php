@@ -26,9 +26,12 @@ class WorkerController extends Controller
 {
     public function workArea(): JsonResponse
     {
-        return response()->json(WorkArea::with('children')
+        $workAreas = WorkArea::with('children')
             ->whereNull('parent_id')
-            ->get());
+            ->orderBy('id')
+            ->get(['id', 'parent_id', 'name']);
+
+        return response()->json($workAreas);
     }
 
     public function workType(): JsonResponse

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class WorkArea extends Model
 {
     protected $table = 'work_areas';
-
     protected $guarded = ['id'];
 
     public function parent(): BelongsTo
@@ -19,6 +18,6 @@ class WorkArea extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(WorkArea::class, 'parent_id');
+        return $this->hasMany(WorkArea::class, 'parent_id')->with('children');
     }
 }
