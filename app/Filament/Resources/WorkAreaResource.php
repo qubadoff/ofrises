@@ -41,6 +41,7 @@ class WorkAreaResource extends Resource
             ->columns([
                 TextColumn::make('id')->label('id'),
                 TextColumn::make('name')->label('name'),
+                TextColumn::make('parent.name')->label('Parent Name'),
                 TextColumn::make('created_at')->label('created_at'),
             ])
             ->filters([
