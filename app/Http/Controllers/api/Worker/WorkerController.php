@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Citizenship;
 use App\Models\Currency;
 use App\Models\MaritalStatus;
+use App\Models\MilitaryStatus;
 use App\Models\SalaryType;
 use App\Models\WorkArea;
 use App\Models\WorkExpectation;
@@ -56,5 +57,10 @@ class WorkerController extends Controller
     public function maritalStatus(): JsonResponse
     {
         return response()->json(MaritalStatus::all());
+    }
+
+    public function militaryStatus(): JsonResponse
+    {
+        return response()->json(MilitaryStatus::all());
     }
 }
