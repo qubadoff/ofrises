@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\Worker;
 
 use App\Http\Controllers\Controller;
 use App\Models\Currency;
+use App\Models\SalaryType;
 use App\Models\WorkArea;
 use App\Models\WorkType;
 use Illuminate\Http\JsonResponse;
@@ -32,5 +33,10 @@ class WorkerController extends Controller
             'name' => $currency->name,
             'icon' => url('/') . '/storage/' . $currency->icon,
         ]);
+    }
+
+    public function salaryType(): JsonResponse
+    {
+        return response()->json(SalaryType::all());
     }
 }
