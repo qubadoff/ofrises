@@ -7,6 +7,7 @@ use App\Models\CarModel;
 use App\Models\Citizenship;
 use App\Models\Currency;
 use App\Models\DriverLicense;
+use App\Models\Language;
 use App\Models\MaritalStatus;
 use App\Models\MilitaryStatus;
 use App\Models\SalaryType;
@@ -74,5 +75,10 @@ class WorkerController extends Controller
     public function carModels(): JsonResponse
     {
         return response()->json(CarModel::all());
+    }
+
+    public function languages(): JsonResponse
+    {
+        return response()->json(Language::all());
     }
 }

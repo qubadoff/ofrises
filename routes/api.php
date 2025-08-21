@@ -45,5 +45,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/militaryStatus', [WorkerController::class, 'militaryStatus']);
         Route::get('/driverLicense', [WorkerController::class, 'driverLicense']);
         Route::get('/carModels', [WorkerController::class, 'carModels']);
+        Route::get('/languages', [WorkerController::class, 'languages']);
     });
 });
