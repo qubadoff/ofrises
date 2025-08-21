@@ -14,9 +14,11 @@ use App\Models\Language;
 use App\Models\MaritalStatus;
 use App\Models\MilitaryStatus;
 use App\Models\SalaryType;
+use App\Models\SoftSkill;
 use App\Models\WorkArea;
 use App\Models\WorkExpectation;
 use App\Models\WorkType;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -95,8 +97,13 @@ class WorkerController extends Controller
         return response()->json(Hobby::all());
     }
 
-    public function softSkills(): JsonResponse
+    public function hardSkills(): JsonResponse
     {
         return response()->json(HardSkill::all());
+    }
+
+    public function softSkills(): JsonResponse
+    {
+        return response()->json(SoftSkill::all());
     }
 }

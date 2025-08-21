@@ -49,5 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/educationType', [WorkerController::class, 'educationType']);
         Route::get('/hobbies', [WorkerController::class, 'hobbies']);
         Route::get('/softSkills', [WorkerController::class, 'softSkills']);
+        Route::get('/hardSkills', [WorkerController::class, 'hardSkills']);
     });
 });
