@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MaritalStatusResource\Pages;
+use App\Filament\Resources\MilitaryStatusResource\Pages;
 use App\Models\MilitaryStatus;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,9 +21,7 @@ class MilitaryStatusResource extends Resource
     {
         return $form
             ->schema([
-                Section::make([
-                    TextInput::make('name')->required(),
-                ])
+                TextInput::make('name')->required(),
             ]);
     }
 
@@ -32,7 +29,7 @@ class MilitaryStatusResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
+                TextColumn::make('id')->sortable(),
                 TextColumn::make('name')->searchable(),
             ])
             ->filters([
@@ -60,9 +57,9 @@ class MilitaryStatusResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMaritalStatuses::route('/'),
-            'create' => Pages\CreateMaritalStatus::route('/create'),
-            'edit' => Pages\EditMaritalStatus::route('/{record}/edit'),
+            'index' => Pages\ListMilitaryStatuses::route('/'),
+            'create' => Pages\CreateMilitaryStatus::route('/create'),
+            'edit' => Pages\EditMilitaryStatus::route('/{record}/edit'),
         ];
     }
 }
