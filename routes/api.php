@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\Auth\AuthController;
 use App\Http\Controllers\api\Customer\CustomerController;
 use App\Http\Controllers\api\Support\SupportController;
+use App\Http\Controllers\api\Worker\WorkerController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -31,5 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/contactInfo', [SupportController::class, 'contactInfo']);
         Route::get('/faqs', [SupportController::class, 'faqs']);
         Route::get('/privacyAndPolicy', [SupportController::class, 'privacyAndPolicy']);
+    });
+
+    Route::prefix('workers')->group(function () {
+        Route::get('/workArea', [WorkerController::class, 'workArea']);
     });
 });
