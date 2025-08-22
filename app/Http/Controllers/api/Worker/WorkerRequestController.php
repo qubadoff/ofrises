@@ -183,9 +183,11 @@ class WorkerRequestController extends Controller
             if (is_array($photoFiles)) {
                 foreach ($photoFiles as $file) {
                     if ($file instanceof UploadedFile && $file->isValid()) {
-                        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                        $filename = 'ofrises-' . uniqid() . '.' . $file->getClientOriginalExtension();
                         $path = "workers/photos/{$filename}";
+
                         $file->storeAs('workers/photos', $filename, 'public');
+
                         $newPhotoPaths[] = $path;
                     }
                 }
