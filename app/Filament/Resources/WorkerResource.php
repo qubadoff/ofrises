@@ -26,7 +26,7 @@ class WorkerResource extends Resource
                     Section::make('Work Areas')
                         ->schema([
                             Select::make('work_areas')
-                                ->label('Work Areas')
+                            ->label('Work Areas')
                                 ->multiple()
                                 ->preload()
                                 ->searchable()
@@ -49,9 +49,9 @@ class WorkerResource extends Resource
 
                                     $record->workAreas()->attach($payload);
                                 }),
-                        ])->columns(1),
-                ]),
-            ]);
+                        ]),
+                    ]),
+                ]);
     }
 
     public static function table(Table $table): Table
