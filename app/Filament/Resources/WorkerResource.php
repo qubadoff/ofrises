@@ -286,7 +286,7 @@ class WorkerResource extends Resource
                     TextInput::make('location')->required(),
                     TextInput::make('latitude')->required(),
                     TextInput::make('longitude')->required(),
-                ]),
+                ])->columns(3),
 
                 Section::make([
                     TextInput::make('salary_min')->required(),
@@ -301,7 +301,7 @@ class WorkerResource extends Resource
                         ->relationship('salaryType', 'name')
                         ->required()
                         ->label('Salary Type'),
-                ]),
+                ])->columns(4),
 
                 Section::make([
                     Select::make('work_expectation_id')
@@ -327,7 +327,7 @@ class WorkerResource extends Resource
                 Section::make([
                     TextInput::make('height')->numeric()->suffix(' SM'),
                     TextInput::make('weight')->numeric()->suffix(' KQ'),
-                ]),
+                ])->columns(),
 
                 Section::make([
                     Select::make('military_status_id')
@@ -350,7 +350,7 @@ class WorkerResource extends Resource
                     Select::make('car_model_id')
                     ->relationship('carModel', 'name')
                     ->multiple(),
-                ]),
+                ])->columns(),
 
                 Section::make([
                     Select::make('hobby_id')
@@ -364,7 +364,7 @@ class WorkerResource extends Resource
                     Select::make('soft_skill_id')
                         ->relationship('softSkill', 'name')
                         ->multiple(),
-                ]),
+                ])->columns(3),
 
                 Section::make([
                     TextArea::make('description')->nullable(),
