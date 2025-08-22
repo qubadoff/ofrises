@@ -378,7 +378,7 @@ class WorkerResource extends Resource
                         WorkerStatusEnum::DEACTIVATED->value => WorkerStatusEnum::DEACTIVATED->getLabel(),
                         WorkerStatusEnum::DELETED->value => WorkerStatusEnum::DELETED->getLabel(),
                     ])->default(WorkerStatusEnum::PENDING->value)->required(),
-                ])
+                ])->columns(),
             ]);
     }
 
