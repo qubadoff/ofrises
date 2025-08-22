@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\Worker\WorkerStatusEnum;
 use App\Filament\Resources\WorkerResource\Pages;
 use App\Models\Customer;
 use App\Models\Language;
@@ -368,6 +369,15 @@ class WorkerResource extends Resource
 
                 Section::make([
                     TextArea::make('description')->nullable(),
+
+                    Select::make('status')
+                    ->options([
+                        WorkerStatusEnum::PENDING->value => WorkerStatusEnum::PENDING->getLabel(),
+                        WorkerStatusEnum::ACTIVE->value => WorkerStatusEnum::ACTIVE->getLabel(),
+                        WorkerStatusEnum::INACTIVE->value => WorkerStatusEnum::INACTIVE->getLabel(),
+                        WorkerStatusEnum::DEACTIVATED->value => WorkerStatusEnum::DEACTIVATED->getLabel(),
+                        WorkerStatusEnum::DELETED->value => WorkerStatusEnum::DELETED->getLabel(),
+                    ])->default(WorkerStatusEnum::PENDING->value)->required(),
                 ])
             ]);
     }
