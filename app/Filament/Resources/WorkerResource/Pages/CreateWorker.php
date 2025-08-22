@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\WorkerResource\Pages;
 
 use App\Filament\Resources\WorkerResource;
+use App\Models\Worker;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -13,10 +14,10 @@ class CreateWorker extends CreateRecord
     protected function afterCreate(): void
     {
         $data = $this->form->getState();
-        $this->syncWorkAreasForCustomer($this->record, $data['customer_id'] ?? null, $data['work_area_ids'] ?? []);
+        $this->syncWorkAreasForCustomer($this->record, $data['customer_id'] ?? null, $data['work_area_id'] ?? []);
     }
 
-    private function syncWorkAreasForCustomer(\App\Models\Worker $worker, ?int $customerId, array $workAreaIds): void
+    private function syncWorkAreasForCustomer(Worker $worker, ?int $customerId, array $workAreaIds): void
     {
         $customerId = $customerId ?: auth()->user()?->customer_id;
         $ids = collect($workAreaIds ?? [])->filter()->unique()->values();

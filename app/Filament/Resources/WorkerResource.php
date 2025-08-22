@@ -34,7 +34,6 @@ class WorkerResource extends Resource
     {
         return $form
             ->schema([
-
                 Section::make('Customer')
                     ->schema([
                         Select::make('customer_id')
@@ -57,7 +56,7 @@ class WorkerResource extends Resource
 
                 Section::make('Work Areas')
                     ->schema([
-                        Select::make('work_area_ids')
+                        Select::make('work_area_id')
                             ->label('Select Work Areas')
                             ->multiple()
                             ->searchable()
