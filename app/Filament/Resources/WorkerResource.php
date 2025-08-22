@@ -165,7 +165,7 @@ class WorkerResource extends Resource
                 Section::make('Languages')
                     ->schema([
                         Repeater::make('languages')
-                            ->relationship('languages') // Worker::languages()
+                            ->relationship('languages')
                             ->label('Language Levels')
                             ->defaultItems(0)
                             ->addActionLabel('Add language')
@@ -175,10 +175,8 @@ class WorkerResource extends Resource
                                     ->dehydrated(true)
                                     ->default(fn (Get $get) => (int) $get('customer_id')),
 
-                                // --- Dil seçimi ---
                                 Select::make('language_id')
                                     ->label('Language')
-                                    // Eğer Language modeli/tablosu varsa:
                                     ->options(fn () => \App\Models\Language::query()
                                         ->orderBy('name')
                                         ->pluck('name', 'id'))
@@ -189,25 +187,12 @@ class WorkerResource extends Resource
                                     ->required()
                                     ->searchable()
                                     ->preload()
-                                    // Aynı repeater içinde aynı dilin ikinci kez seçilmesini engeller
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
 
-                                // --- Seviye seçimi ---
                                 Select::make('language_level_id')
                                     ->label('Level')
-                                    // Eğer LanguageLevel modeli/tablosu varsa:
                                     ->options(fn () => \App\Models\LanguageLevel::query()
-                                        ->orderBy('sort_order') // yoksa orderBy('name')
                                         ->pluck('name', 'id'))
-                                    // Eğer tablo yoksa, üst satırı kaldırıp CEFR sabiti kullanın:
-                                    // ->options([
-                                    //     1 => 'A1 (Beginner)',
-                                    //     2 => 'A2 (Elementary)',
-                                    //     3 => 'B1 (Intermediate)',
-                                    //     4 => 'B2 (Upper-Intermediate)',
-                                    //     5 => 'C1 (Advanced)',
-                                    //     6 => 'C2 (Proficient)',
-                                    // ])
                                     ->required()
                                     ->searchable()
                                     ->preload(),
