@@ -51,7 +51,7 @@ class WorkerResource extends Resource
                             ->preload()
                             ->required()
                             ->reactive()
-                            ->dehydrated(false),
+                            ->dehydrated(true),
 
                     ]),
 
