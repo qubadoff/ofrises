@@ -229,6 +229,7 @@ class WorkerResource extends Resource
                 Section::make('Work Experiences')
                     ->schema([
                         Repeater::make('workExperience')
+                            ->relationship('workExperience')
                         ->label('Work Experience')
                         ->defaultItems(0)
                         ->addActionLabel('Add work experience')
