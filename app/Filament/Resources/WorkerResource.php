@@ -88,7 +88,7 @@ class WorkerResource extends Resource
                                     $component->state($ids);
                                 }),
                         ]),
-                ])->columns(),
+                ])->columns(3),
 
                 Section::make('Education')
                     ->schema([
