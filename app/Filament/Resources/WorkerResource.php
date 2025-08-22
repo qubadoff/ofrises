@@ -9,7 +9,6 @@ use App\Models\Language;
 use App\Models\LanguageLevel;
 use App\Models\WorkArea;
 use App\Models\Worker;
-use Filament\Actions\ForceDeleteAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -457,6 +456,8 @@ class WorkerResource extends Resource
                 TextColumn::make('customer.name')->searchable(),
                 TextColumn::make('customer.surname')->searchable(),
                 TextColumn::make('status')->badge(),
+                TextColumn::make('created_at')->sortable(),
+                TextColumn::make('updated_at')->sortable(),
             ])
             ->filters([
                 //
