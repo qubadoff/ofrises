@@ -24,6 +24,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -54,9 +55,7 @@ class WorkerResource extends Resource
                             ->required()
                             ->reactive()
                             ->dehydrated(),
-
                     ]),
-
 
                 Section::make('Work Areas')
                     ->schema([
@@ -452,7 +451,13 @@ class WorkerResource extends Resource
                 TextColumn::make('id')->sortable(),
                 TextColumn::make('customer.name')->searchable(),
                 TextColumn::make('customer.surname')->searchable(),
-                TextColumn::make('status')->badge(),
+                SelectColumn::make('status')->options([
+                    WorkerStatusEnum::PENDING->value => WorkerStatusEnum::PENDING->getLabel(),
+                    WorkerStatusEnum::ACTIVE->value => WorkerStatusEnum::ACTIVE->getLabel(),
+                    WorkerStatusEnum::INACTIVE->value => WorkerStatusEnum::INACTIVE->getLabel(),
+                    WorkerStatusEnum::DEACTIVATED->value => WorkerStatusEnum::DEACTIVATED->getLabel(),
+                    WorkerStatusEnum::DELETED->value => WorkerStatusEnum::DELETED->getLabel(),
+                ]),
                 TextColumn::make('created_at')->sortable(),
                 TextColumn::make('updated_at')->sortable(),
             ])
