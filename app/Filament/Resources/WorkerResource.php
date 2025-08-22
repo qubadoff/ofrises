@@ -51,7 +51,7 @@ class WorkerResource extends Resource
                             ->preload()
                             ->required()
                             ->reactive()
-                            ->dehydrated(true),
+                            ->dehydrated(),
 
                     ]),
 
@@ -63,9 +63,9 @@ class WorkerResource extends Resource
                             ->multiple()
                             ->searchable()
                             ->preload()
-                            ->dehydrated(false) // modele yazmıyoruz
+                            ->dehydrated(false)
                             ->options(function () {
-                                $areas = \App\Models\WorkArea::query()
+                                $areas = WorkArea::query()
                                     ->select(['id', 'name', 'parent_id'])
                                     ->get();
 
@@ -85,7 +85,7 @@ class WorkerResource extends Resource
                                     ->sort()
                                     ->all();
                             })
-                            ->afterStateHydrated(function (Select $component, ?\App\Models\Worker $record, \Filament\Forms\Get $get, \Filament\Forms\Set $set) {
+                            ->afterStateHydrated(function (Select $component, ?Worker $record, Get $get, Set $set) {
                                 if (!$record) return;
                                 $customerId = $get('customer_id');
                                 if (!$customerId) return;
@@ -96,9 +96,9 @@ class WorkerResource extends Resource
                                     ->all();
 
                                 $component->state($ids);
-                                $set('work_area_ids_hidden', $ids); // gizli alana kopyala
+                                $set('work_area_ids_hidden', $ids);
                             })
-                            ->afterStateUpdated(function ($state, \Filament\Forms\Set $set) {
+                            ->afterStateUpdated(function ($state, Set $set) {
                                 $set('work_area_ids_hidden', $state ?: []);
                             }),
 
