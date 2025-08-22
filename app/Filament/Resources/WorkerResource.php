@@ -80,6 +80,14 @@ class WorkerResource extends Resource
                                 $component->state($ids);
                             }),
                     ]),
+
+                Section::make([
+                    Select::make('work_type_id')
+                        ->relationship('workType', 'name')
+                        ->multiple()
+                        ->required()
+                    ->label('Work Type')
+                ])
             ]);
     }
 
