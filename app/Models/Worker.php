@@ -123,4 +123,9 @@ class Worker extends Model
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
+    public function educationType(): BelongsTo
+    {
+        return $this->belongsTo(EducationType::class, 'education_type_id');
+    }
 }

@@ -117,18 +117,12 @@ class WorkerResource extends Resource
                             ->addActionLabel('Add education')
                             ->schema([
                                 Hidden::make('customer_id')
-                                    ->dehydrated(true)
+                                    ->dehydrated()
                                     ->default(fn (Get $get) => (int) $get('customer_id')),
 
                                 Select::make('education_type')
                                     ->label('Education Type')
-                                    ->options([
-                                        0 => 'High School',
-                                        1 => 'Bachelor',
-                                        2 => 'Master',
-                                        3 => 'PhD',
-                                        4 => 'Other',
-                                    ])
+                                    ->relationship('educationType', 'name')
                                     ->required()
                                     ->native(false),
 
