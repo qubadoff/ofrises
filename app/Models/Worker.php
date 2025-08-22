@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\Worker\WorkerStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,6 +14,18 @@ class Worker extends Model
     protected $table = 'workers';
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'status' => WorkerStatusEnum::class,
+        'work_type_id' => 'array',
+        'work_expectation_id' => 'array',
+        'citizenship_id' => 'array',
+        'driver_license_id' => 'array',
+        'car_model_id' => 'array',
+        'hobby_id' => 'array',
+        'hard_skill_id' => 'array',
+        'soft_skill_id' => 'array',
+    ];
 
     public function workAreas(): BelongsToMany
     {
