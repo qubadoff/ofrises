@@ -58,7 +58,6 @@ class WorkerResource extends Resource
 
                 Section::make('Work Areas')
                     ->schema([
-                        // 1) Çoklu seçim (dehydrate = false)
                         Select::make('work_area_ids')
                             ->label('Select Work Areas')
                             ->multiple()
@@ -86,10 +85,8 @@ class WorkerResource extends Resource
                                     ->sort()
                                     ->all();
                             })
-                            // Kayıt açıldığında mevcut bağları yükle
-                            ->afterStateHydrated(function (Select $component, ?\App\Models\Worker $record, Get $get, Set $set) {
+                            ->afterStateHydrated(function (Select $component, ?\App\Models\Worker $record, \Filament\Forms\Get $get, \Filament\Forms\Set $set) {
                                 if (!$record) return;
-
                                 $customerId = $get('customer_id');
                                 if (!$customerId) return;
 
@@ -98,22 +95,17 @@ class WorkerResource extends Resource
                                     ->pluck('work_areas.id')
                                     ->all();
 
-                                // select state
                                 $component->state($ids);
-                                // 2) gizli alana da aynı state'i yaz
-                                $set('work_area_ids_hidden', $ids);
+                                $set('work_area_ids_hidden', $ids); // gizli alana kopyala
                             })
-                            // 3) kullanıcı seçim değiştirirse, gizli alanı güncelle
-                            ->afterStateUpdated(function ($state, Set $set) {
+                            ->afterStateUpdated(function ($state, \Filament\Forms\Set $set) {
                                 $set('work_area_ids_hidden', $state ?: []);
                             }),
 
-                        // 4) Dehydrate edilen gizli alan (afterSave'de $data içinde kesin olur)
                         Hidden::make('work_area_ids_hidden')
                             ->dehydrated(true)
                             ->default([]),
-                    ])
-                    ->columns(1),
+                    ]),
 
                 Section::make('Education')
                     ->schema([
@@ -452,22 +444,7 @@ class WorkerResource extends Resource
                         $data['customer_id'] = (int) $get('customer_id');
                         return $data;
                     }),
-            ])
-
-            ->afterCreate(function (Worker $record, array $data) {
-                static::syncWorkAreasForCustomer(
-                    $record,
-                    (int) $data['customer_id'],
-                    (array) ($data['work_area_ids_hidden'] ?? [])
-                );
-            })
-            ->afterSave(function (Worker $record, array $data) {
-                static::syncWorkAreasForCustomer(
-                    $record,
-                    (int) $data['customer_id'],
-                    (array) ($data['work_area_ids_hidden'] ?? [])
-                );
-            });
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -504,23 +481,4 @@ class WorkerResource extends Resource
             'edit' => Pages\EditWorker::route('/{record}/edit'),
         ];
     }
-
-    protected static function syncWorkAreasForCustomer(\App\Models\Worker $worker, int $customerId, array $workAreaIds): void
-    {
-        $ids = collect($workAreaIds)->filter()->unique()->values();
-
-        // aynı müşteri için önce temizle
-        $worker->workAreas()->wherePivot('customer_id', $customerId)->detach();
-
-        if ($ids->isEmpty()) {
-            return;
-        }
-
-        $payload = $ids->mapWithKeys(fn ($id) => [
-            $id => ['customer_id' => $customerId],
-        ])->all();
-
-        $worker->workAreas()->attach($payload);
-    }
-
 }
