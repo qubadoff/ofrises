@@ -81,6 +81,16 @@ class WorkerCreateRequest extends FormRequest
             'languages.*.language_level_id' => 'required|integer|exists:language_levels,id',
 
 
+            'workExperience'                => 'nullable|array',
+            'workExperience.*.company_name' => 'required|string|max:255',
+            'workExperience.*.position_name'=> 'required|string|max:255',
+            'workExperience.*.start_date'   => 'required|date',
+            'workExperience.*.end_date'     => 'nullable|date|after_or_equal:workExperience.*.start_date',
+            'workExperience.*.is_present'   => 'boolean',
+            'workExperience.*.workload'     => 'nullable|string|max:2000',
+            'workExperience.*.description'  => 'nullable|string|max:5000',
+
+
         ];
     }
 }

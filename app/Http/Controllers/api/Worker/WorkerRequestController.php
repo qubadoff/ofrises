@@ -101,6 +101,29 @@ class WorkerRequestController extends Controller
                 }
             }
 
+            if (!empty($data['workExperience']) && is_array($data['workExperience'])) {
+                $rows = collect($data['workExperience'])
+                    ->filter(fn ($row) => !empty($row['company_name']) && !empty($row['position_name']) && !empty($row['start_date']))
+                    ->map(function ($row) use ($customer) {
+                        $isPresent = (bool) ($row['is_present'] ?? false);
+                        return [
+                            'customer_id'   => $customer->id,
+                            'company_name'  => $row['company_name'],
+                            'position_name' => $row['position_name'],
+                            'start_date'    => $row['start_date'],
+                            'end_date'      => $isPresent ? null : ($row['end_date'] ?? null),
+                            'is_present'    => $isPresent,
+                            'workload'      => $row['workload'] ?? null,
+                            'description'   => $row['description'] ?? null,
+                        ];
+                    })->values()->all();
+
+                if (!empty($rows)) {
+                    $worker->workExperience()->createMany($rows);
+                }
+            }
+
+
 
             return response()->json([
                 'message' => 'Worker created successfully.',
