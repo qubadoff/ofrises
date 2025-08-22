@@ -8,9 +8,9 @@ use App\Http\Requests\Worker\WorkerCreateRequest;
 use App\Models\Worker;
 use App\Models\WorkerPhotoAndVideo;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
 
 class WorkerRequestController extends Controller
