@@ -18,8 +18,6 @@ return new class extends Migration
             $table->longText('photos');
             $table->text('video');
             $table->timestamps();
-
-            $table->foreign('customer_id')->references('id')->cascadeOnDelete();
         });
     }
 
