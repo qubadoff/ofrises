@@ -67,6 +67,15 @@ class WorkerCreateRequest extends FormRequest
             'weight'               => 'nullable|numeric|min:0|max:500',
             'have_a_child'         => 'nullable|boolean',
             'description'          => 'nullable|string|max:5000',
+
+            'educations' => 'nullable|array',
+            'educations.*.education_type'  => 'required|integer|in:0,1,2,3,4',
+            'educations.*.university_name' => 'required|string|max:255',
+            'educations.*.start_date'      => 'required|date',
+            'educations.*.end_date'        => 'nullable|date',
+            'educations.*.is_present'      => 'boolean',
+            'educations.*.description'     => 'nullable|string|max:2000',
+
         ];
     }
 }
