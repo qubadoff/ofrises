@@ -18,9 +18,7 @@ use App\Models\SoftSkill;
 use App\Models\WorkArea;
 use App\Models\WorkExpectation;
 use App\Models\WorkType;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class WorkerController extends Controller
 {
