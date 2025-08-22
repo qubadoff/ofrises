@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WorkerExperience extends Model
 {
-    protected $table = 'work_experiences';
+    protected $table = 'worker_experiences';
 
     protected $guarded = ['id'];
 
