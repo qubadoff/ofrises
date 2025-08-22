@@ -68,6 +68,7 @@ class CustomerResource extends Resource
                 Tables\Columns\TextColumn::make('surname')->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('phone')->searchable(),
+                Tables\Columns\TextColumn::make('status')->badge(),
             ])
             ->filters([
                 //
