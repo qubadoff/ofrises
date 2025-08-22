@@ -22,6 +22,28 @@ class WorkerResource extends Resource
     {
         return $form
             ->schema([
+                Select::make('worker_work_areas')
+                    ->label('Work Areas')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->relationship(
+                        'workAreas', // The name of the relationship method in your Worker model
+                        'name',      // The attribute to use as the title
+                        fn (Builder $q) => $q->leaves()->orderBy('name')
+                    )
+                    ->saveRelationshipsUsing(function (Worker $record, ?array $state) {
+                        $customerId = auth()->user()?->customer_id;
+                        $ids = collect($state ?? [])->unique()->values();
+                        $record->workAreas()
+                            ->wherePivot('customer_id', $customerId)
+                            ->detach();
+                        $payload = $ids->mapWithKeys(fn ($id) => [
+                            $id => ['customer_id' => $customerId],
+                        ])->all();
+                        $record->workAreas()->attach($payload);
+                    }),
+
 
             ]);
     }

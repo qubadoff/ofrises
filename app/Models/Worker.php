@@ -13,12 +13,6 @@ class Worker extends Model
 
     public function workAreas(): BelongsToMany
     {
-        return $this->belongsToMany(WorkArea::class)->withPivot('customer_id');
-    }
-
-    public function workAreasForCustomer(?int $customerId = null): BelongsToMany
-    {
-        $customerId ??= auth()->user()?->customer_id;
-        return $this->workAreas()->wherePivot('customer_id', $customerId);
+        return $this->belongsToMany(WorkerWorkArea::class)->withPivot('customer_id');
     }
 }
