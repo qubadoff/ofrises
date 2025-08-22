@@ -4,6 +4,7 @@ use App\Http\Controllers\api\Auth\AuthController;
 use App\Http\Controllers\api\Customer\CustomerController;
 use App\Http\Controllers\api\Support\SupportController;
 use App\Http\Controllers\api\Worker\WorkerController;
+use App\Http\Controllers\api\Worker\WorkerRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -35,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('workers')->group(function () {
+        Route::get('/list', [WorkerController::class, 'list']);
+        Route::post('/create', [WorkerRequestController::class, 'create']);
         Route::get('/workArea', [WorkerController::class, 'workArea']);
         Route::get('/workType', [WorkerController::class, 'workType']);
         Route::get('/currencies', [WorkerController::class, 'currencies']);
