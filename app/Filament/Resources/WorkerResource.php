@@ -35,16 +35,24 @@ class WorkerResource extends Resource
         return $form
             ->schema([
 
-                Section::make('General')
+                Section::make('Customer')
                     ->schema([
                         Select::make('customer_id')
                             ->label('Customer')
-                            ->options(fn () => Customer::query()->orderBy('name')->pluck('name', 'id'))
+                            ->options(fn () =>
+                            Customer::query()
+                                ->orderBy('name')
+                                ->get()
+                                ->mapWithKeys(fn ($c) => [
+                                    $c->id => "{$c->name} {$c->surname}"
+                                ])
+                            )
                             ->searchable()
                             ->preload()
                             ->required()
                             ->reactive()
                             ->dehydrated(false),
+
                     ]),
 
                 Section::make('Work Areas')
