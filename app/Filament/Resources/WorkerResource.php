@@ -469,7 +469,7 @@ class WorkerResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    ForceDeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
                 ]),
             ]);
     }
