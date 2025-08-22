@@ -13,6 +13,13 @@ class Worker extends Model
 
     public function workAreas(): BelongsToMany
     {
-        return $this->belongsToMany(WorkerWorkArea::class)->withPivot('customer_id');
+        return $this->belongsToMany(
+            WorkArea::class,      // <-- pivot diğer ucu WorkArea
+            'worker_work_areas',  // pivot tablo adı
+            'worker_id',          // bu modelin FK'sı
+            'work_area_id'        // karşı FK
+        )
+            ->withPivot('customer_id')
+            ->withTimestamps();
     }
 }
