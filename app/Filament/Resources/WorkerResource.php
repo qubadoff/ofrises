@@ -28,8 +28,8 @@ class WorkerResource extends Resource
                     ->preload()
                     ->searchable()
                     ->relationship(
-                        'workAreas', // Relationship method name in Worker model
-                        'name',      // Title attribute
+                        'workAreas', // The name of the relationship method in your Worker model
+                        'name',      // The attribute to use as the title
                         fn (Builder $q) => $q->leaves()->orderBy('name')
                     )
                     ->saveRelationshipsUsing(function (Worker $record, ?array $state) {
@@ -43,6 +43,7 @@ class WorkerResource extends Resource
                         ])->all();
                         $record->workAreas()->attach($payload);
                     }),
+
 
             ]);
     }
