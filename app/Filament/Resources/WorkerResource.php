@@ -29,15 +29,13 @@ class WorkerResource extends Resource
                     ->schema([
                         Select::make('customer_id')
                             ->label('Customer')
-                            ->options(fn () => Customer::query()
-                                ->orderBy('name')
-                                ->pluck('name', 'id'))
+                            ->options(fn () => Customer::query()->orderBy('name')->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
                             ->required()
-                            ->reactive(),
-                    ])
-                    ->columns(1),
+                            ->reactive()
+                            ->dehydrated(false), // Worker tablosuna yazılmayacak, sadece state olarak kullanılacak
+                    ]),
 
                 Section::make('Work Areas')
                     ->schema([
@@ -46,42 +44,30 @@ class WorkerResource extends Resource
                             ->multiple()
                             ->searchable()
                             ->preload()
+                            ->dehydrated(false) // Pivot’u sayfa hook’larında biz yöneteceğiz
                             ->options(function () {
-                                // Hiyerarşik etiket üretimi: "Parent › Child › Leaf"
                                 $areas = WorkArea::query()
                                     ->select(['id', 'name', 'parent_id'])
                                     ->get();
 
-                                // İndeksleme
                                 $byId = $areas->keyBy('id');
-                                // Path label cache
                                 $cache = [];
 
-                                $makePath = function ($id) use (&$makePath, $byId, &$cache) {
-                                    if (isset($cache[$id])) {
-                                        return $cache[$id];
-                                    }
-                                    $node = $byId[$id] ?? null;
-                                    if (!$node) return '';
-                                    if (!$node->parent_id) {
-                                        return $cache[$id] = $node->name;
-                                    }
-                                    return $cache[$id] = $makePath($node->parent_id) . ' › ' . $node->name;
+                                $path = function ($id) use (&$path, $byId, &$cache) {
+                                    if (isset($cache[$id])) return $cache[$id];
+                                    $n = $byId[$id] ?? null;
+                                    if (!$n) return '';
+                                    if (!$n->parent_id) return $cache[$id] = $n->name;
+                                    return $cache[$id] = $path($n->parent_id) . ' › ' . $n->name;
                                 };
 
                                 return $areas
-                                    ->sortBy('name') // isterseniz path’e göre de sıralayabilirsiniz
-                                    ->mapWithKeys(fn ($a) => [$a->id => $makePath($a->id)])
-                                    ->sort() // path etiketine göre alfabetik
+                                    ->mapWithKeys(fn ($a) => [$a->id => $path($a->id)])
+                                    ->sort()
                                     ->all();
                             })
-                            // Eğer sadece yaprakların seçilmesini istiyorsanız alttaki filter’i açın:
-                            // ->options(function () { return WorkArea::query()->whereDoesntHave('children')->get()->... })
-                            ->helperText('Ağaçtaki herhangi bir kategori seçilebilir. (İsterseniz sadece yapraklara sınırlandırabiliriz.)')
-                            // İlişkiyi kendimiz yöneteceğiz, bu yüzden form verisi olarak dursun ama otomatik kaydetmesin:
-                            ->dehydrated(false)
-                            ->afterStateHydrated(function (Select $component, ?Worker $record, Get $get) {
-                                // Mevcut kaydı açarken, seçili müşteri için zaten bağlı work_area_id'leri göster.
+                            ->helperText('Ağaçtaki herhangi bir kategori seçilebilir.')
+                            ->afterStateHydrated(function (Select $component, ?\App\Models\Worker $record, Get $get) {
                                 if (!$record) return;
                                 $customerId = $get('customer_id');
                                 if (!$customerId) return;
@@ -92,50 +78,9 @@ class WorkerResource extends Resource
                                     ->all();
 
                                 $component->state($ids);
-                            })
-                            ->saveRelationshipsUsing(function (Worker $record, ?array $state, Get $get) {
-                                // Bu closure Select üzerinde çağrılmaz (relationship bağlı değil).
-                                // Kaydı "mutateFormDataBeforeSave" veya "afterSave" ile yöneteceğiz.
                             }),
-                    ])
-                    ->columns(1),
-            ])
-            // KAYITTAN ÖNCE / SONRA pivot işlemi
-            ->mutateFormDataBeforeCreate(function (array $data) {
-                // Worker oluşturulurken doğrudan pivot yazamayız (id yok); afterCreate’da yapacağız.
-                return $data;
-            })
-            ->mutateFormDataBeforeSave(function (array $data) {
-                // work_area_ids form state'ini korumak için ekliyoruz (dehydrated(false) olduğu için $data’ya girmez)
-                return $data;
-            })
-            ->afterCreate(function (Worker $record, array $data, Get $get) {
-                static::syncWorkAreasForCustomer($record, $get('customer_id'), request()->input('data.work_area_ids', []));
-            })
-            ->afterSave(function (Worker $record, array $data, Get $get) {
-                static::syncWorkAreasForCustomer($record, $get('customer_id'), request()->input('data.work_area_ids', []));
-            });
-    }
-
-// Küçük bir yardımcı: seçilen müşteri için pivot’u senkronla
-    protected static function syncWorkAreasForCustomer(Worker $worker, ?int $customerId, array $workAreaIds): void
-    {
-        $customerId = $customerId ?: auth()->user()?->customer_id;
-        $ids = collect($workAreaIds ?? [])->filter()->unique()->values();
-
-        // Aynı müşteri için önceki pivotları temizle
-        $worker->workAreas()->wherePivot('customer_id', $customerId)->detach();
-
-        if ($ids->isEmpty()) {
-            return;
-        }
-
-        // attach payload
-        $payload = $ids->mapWithKeys(fn ($id) => [
-            $id => ['customer_id' => $customerId],
-        ])->all();
-
-        $worker->workAreas()->attach($payload);
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table

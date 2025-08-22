@@ -9,4 +9,28 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateWorker extends CreateRecord
 {
     protected static string $resource = WorkerResource::class;
+
+    protected function afterCreate(): void
+    {
+        $data = $this->form->getState();
+        $this->syncWorkAreasForCustomer($this->record, $data['customer_id'] ?? null, $data['work_area_ids'] ?? []);
+    }
+
+    private function syncWorkAreasForCustomer(\App\Models\Worker $worker, ?int $customerId, array $workAreaIds): void
+    {
+        $customerId = $customerId ?: auth()->user()?->customer_id;
+        $ids = collect($workAreaIds ?? [])->filter()->unique()->values();
+
+        $worker->workAreas()->wherePivot('customer_id', $customerId)->detach();
+
+        if ($ids->isEmpty()) {
+            return;
+        }
+
+        $payload = $ids->mapWithKeys(fn ($id) => [
+            $id => ['customer_id' => $customerId],
+        ])->all();
+
+        $worker->workAreas()->attach($payload);
+    }
 }
