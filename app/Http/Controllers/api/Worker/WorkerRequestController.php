@@ -154,8 +154,8 @@ class WorkerRequestController extends Controller
         $request->validate([
             'worker_id' => 'required|integer|exists:workers,id',
             'photos'    => 'nullable',
-            'photos.*'  => 'image|max:8192', // 8MB
-            'video'     => 'nullable|mimetypes:video/mp4,video/quicktime,video/x-matroska|max:204800', // 200MB
+            'photos.*'  => 'image|max:8192',
+            'video'     => 'nullable|mimetypes:video/mp4,video/quicktime,video/x-matroska|max:204800',
             'append'    => 'sometimes|boolean',
         ]);
 
@@ -168,10 +168,10 @@ class WorkerRequestController extends Controller
                 'worker_id'   => $worker->id,
             ]);
 
-            $existingPhotos = is_string($record->photos) ? json_decode($record->photos, true) : [];
-            if (!is_array($existingPhotos)) {
-                $existingPhotos = [];
-            }
+            $existingPhotos = is_array($record->photos)
+                ? $record->photos
+                : (is_string($record->photos) ? (json_decode($record->photos, true) ?: []) : []);
+
             $existingVideo = $record->video;
 
             $newPhotoPaths = [];
@@ -185,9 +185,7 @@ class WorkerRequestController extends Controller
                     if ($file instanceof UploadedFile && $file->isValid()) {
                         $filename = 'ofrises-' . uniqid() . '.' . $file->getClientOriginalExtension();
                         $path = "workers/photos/{$filename}";
-
-                        $file->storeAs('workers/photos', $filename, 'public');
-
+                        $file->storeAs('workers/photos', $filename, 'public'); // storage/app/public/...
                         $newPhotoPaths[] = $path;
                     }
                 }
@@ -197,21 +195,19 @@ class WorkerRequestController extends Controller
                 ? array_values(array_unique(array_merge($existingPhotos, $newPhotoPaths)))
                 : ($newPhotoPaths ?: []);
 
-            // --- Video
             $finalVideo = $existingVideo;
             $videoFile = $request->file('video');
             if ($videoFile instanceof UploadedFile && $videoFile->isValid()) {
-                $filename = uniqid() . '.' . $videoFile->getClientOriginalExtension();
+                $filename = 'ofrises-' . uniqid() . '.' . $videoFile->getClientOriginalExtension();
                 $path = "workers/videos/{$filename}";
                 $videoFile->storeAs('workers/videos', $filename, 'public');
                 $finalVideo = $path;
             }
 
-            $record->photos = json_encode($finalPhotos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $record->photos = $finalPhotos;
             $record->video  = $finalVideo;
             $record->save();
 
-            // --- Tam URL üret
             $photoUrls = array_map(fn ($p) => url(Storage::disk('public')->url($p)), $finalPhotos);
             $videoUrl  = $finalVideo ? url(Storage::disk('public')->url($finalVideo)) : null;
 
@@ -227,6 +223,5 @@ class WorkerRequestController extends Controller
             ]);
         });
     }
-
 
 }
