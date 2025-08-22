@@ -67,7 +67,7 @@ class WorkerResource extends Resource
                                     ->select(['id', 'name', 'parent_id'])
                                     ->get();
 
-                                $byId = $areas->keyBy('id');
+                                $byId  = $areas->keyBy('id');
                                 $cache = [];
 
                                 $path = function ($id) use (&$path, $byId, &$cache) {
@@ -95,7 +95,8 @@ class WorkerResource extends Resource
 
                                 $component->state($ids);
                             }),
-                    ]),
+                    ])
+                    ->columns(1),
 
                 Section::make('Education')
                     ->schema([
