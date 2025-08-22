@@ -9,6 +9,7 @@ use App\Models\Worker;
 use App\Models\WorkerPhotoAndVideo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -151,52 +152,79 @@ class WorkerRequestController extends Controller
         $customer = Auth::user();
 
         $request->validate([
-            'worker_id' => 'required|exists:workers,id',
-            'photos.*'  => 'nullable|image|max:5120',
-            'video'     => 'nullable|mimes:mp4,mov,avi,webm|max:51200',
+            'worker_id' => 'required|integer|exists:workers,id',
+            'photos'    => 'nullable',
+            'photos.*'  => 'image|max:8192', // 8MB
+            'video'     => 'nullable|mimetypes:video/mp4,video/quicktime,video/x-matroska|max:204800', // 200MB
+            'append'    => 'sometimes|boolean',
         ]);
 
-        $workerId = $request->input('worker_id');
+        $worker = Worker::query()->findOrFail($request->input('worker_id'));
+        $append = $request->boolean('append', true);
 
-        if (WorkerPhotoAndVideo::query()->where('customer_id', $customer->id)->where('worker_id', $workerId)->exists()) {
-            return response()->json([
-                'message' => 'This worker already has a image and video.',
-            ], 400);
-        }
+        return DB::transaction(function () use ($request, $customer, $worker, $append) {
+            $record = WorkerPhotoAndVideo::query()->firstOrNew([
+                'customer_id' => $customer->id,
+                'worker_id'   => $worker->id,
+            ]);
 
-        $photos = [];
-        if ($request->hasFile('photos')) {
-            foreach ($request->file('photos') as $photo) {
-                $path = $photo->store("worker/{$workerId}/photos", 'public');
-                $photos[] = $path;
+            $existingPhotos = is_string($record->photos) ? json_decode($record->photos, true) : [];
+            if (!is_array($existingPhotos)) {
+                $existingPhotos = [];
             }
-        }
+            $existingVideo = $record->video;
 
-        $videoPath = null;
-        if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->store("worker/{$workerId}/videos", 'public');
-        }
+            $newPhotoPaths = [];
+            $photoFiles = $request->file('photos');
+            if ($photoFiles instanceof UploadedFile) {
+                $photoFiles = [$photoFiles];
+            }
 
-        $record = WorkerPhotoAndVideo::query()->create([
-            'customer_id' => $customer->id,
-            'worker_id'   => $workerId,
-            'photos'      => json_encode($photos),
-            'video'       => $videoPath,
-        ]);
+            if (is_array($photoFiles)) {
+                foreach ($photoFiles as $file) {
+                    if ($file instanceof UploadedFile && $file->isValid()) {
+                        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                        $path = "workers/photos/{$filename}";
+                        $file->storeAs('workers/photos', $filename, 'public');
+                        $newPhotoPaths[] = $path;
+                    }
+                }
+            }
 
-        $photoUrls = collect($photos)->map(fn($p) => Storage::url($p))->all();
-        $videoUrl  = $videoPath ? Storage::url($videoPath) : null;
+            $finalPhotos = $append
+                ? array_values(array_unique(array_merge($existingPhotos, $newPhotoPaths)))
+                : ($newPhotoPaths ?: []);
 
-        return response()->json([
-            'message' => 'The image and videos was uploaded successfully.',
-            'data'    => [
-                'id'          => $record->id,
-                'customer_id' => $record->customer_id,
-                'worker_id'   => $record->worker_id,
-                'photos'      => $photoUrls,
-                'video'       => $videoUrl,
-            ],
-        ]);
+            // --- Video
+            $finalVideo = $existingVideo;
+            $videoFile = $request->file('video');
+            if ($videoFile instanceof UploadedFile && $videoFile->isValid()) {
+                $filename = uniqid() . '.' . $videoFile->getClientOriginalExtension();
+                $path = "workers/videos/{$filename}";
+                $videoFile->storeAs('workers/videos', $filename, 'public');
+                $finalVideo = $path;
+            }
+
+            $record->photos = json_encode($finalPhotos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $record->video  = $finalVideo;
+            $record->save();
+
+            // --- Tam URL üret
+            $photoUrls = array_map(fn ($p) => url(Storage::disk('public')->url($p)), $finalPhotos);
+            $videoUrl  = $finalVideo ? url(Storage::disk('public')->url($finalVideo)) : null;
+
+            return response()->json([
+                'message' => 'The image and videos was uploaded successfully.',
+                'data'    => [
+                    'id'          => $record->id,
+                    'customer_id' => $record->customer_id,
+                    'worker_id'   => (string) $record->worker_id,
+                    'photos'      => $photoUrls,
+                    'video'       => $videoUrl,
+                ],
+            ]);
+        });
     }
+
 
 }
