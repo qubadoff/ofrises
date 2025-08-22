@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Worker extends Model
 {
@@ -98,5 +99,10 @@ class Worker extends Model
     public function workExperience(): HasMany
     {
         return $this->hasMany(WorkerExperience::class, 'worker_id');
+    }
+
+    public function photoAndVideo(): HasOne
+    {
+        return $this->hasOne(WorkerPhotoAndVideo::class, 'worker_id');
     }
 }

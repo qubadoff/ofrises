@@ -10,6 +10,7 @@ use App\Models\LanguageLevel;
 use App\Models\WorkArea;
 use App\Models\Worker;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -379,6 +380,51 @@ class WorkerResource extends Resource
                         WorkerStatusEnum::DELETED->value => WorkerStatusEnum::DELETED->getLabel(),
                     ])->default(WorkerStatusEnum::PENDING->value)->required(),
                 ])->columns(),
+
+                Section::make('Media')
+                    ->schema([
+                        Hidden::make('customer_id')
+                            ->dehydrated(true)
+                            ->default(fn (Get $get) => (int) $get('customer_id')),
+
+                        FileUpload::make('photos')
+                            ->label('Photos')
+                            ->image()
+                            ->multiple()
+                            ->reorderable()
+                            ->appendFiles()
+                            ->downloadable()
+                            ->openable()
+                            ->directory('workers/photos')
+                            ->preserveFilenames()
+                            ->maxFiles(20)
+                            ->maxSize(15000)
+                            ->helperText('Photos are multiple'),
+
+                        FileUpload::make('video')
+                            ->label('Video')
+                            ->acceptedFileTypes(['video/mp4', 'video/quicktime', 'video/x-matroska'])
+                            ->directory('workers/videos')
+                            ->preserveFilenames()
+                            ->maxSize(204800)
+                            ->helperText('Only one video file allowed'),
+                    ])
+                    ->columns()
+                    ->relationship('photoAndVideo')
+                    ->afterStateHydrated(function ($component, Get $get) {
+                        $cid = (int) $get('customer_id');
+                        $state = $component->getState() ?? [];
+                        $state['customer_id'] = $cid;
+                        $component->state($state);
+                    })
+                    ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
+                        $data['customer_id'] = (int) $get('customer_id');
+                        return $data;
+                    })
+                    ->mutateRelationshipDataBeforeSaveUsing(function (array $data, Get $get) {
+                        $data['customer_id'] = (int) $get('customer_id');
+                        return $data;
+                    }),
             ]);
     }
 
