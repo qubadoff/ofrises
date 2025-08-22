@@ -452,7 +452,22 @@ class WorkerResource extends Resource
                         $data['customer_id'] = (int) $get('customer_id');
                         return $data;
                     }),
-            ]);
+            ])
+
+            ->afterCreate(function (Worker $record, array $data) {
+                static::syncWorkAreasForCustomer(
+                    $record,
+                    (int) $data['customer_id'],
+                    (array) ($data['work_area_ids_hidden'] ?? [])
+                );
+            })
+            ->afterSave(function (Worker $record, array $data) {
+                static::syncWorkAreasForCustomer(
+                    $record,
+                    (int) $data['customer_id'],
+                    (array) ($data['work_area_ids_hidden'] ?? [])
+                );
+            });
     }
 
     public static function table(Table $table): Table
