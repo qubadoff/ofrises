@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('worker_work_areas', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('worker_id');
             $table->unsignedBigInteger('work_area_id');
             $table->timestamps();
 
-            $table->primary(['worker_id','work_area_id']);
+            $table->primary(['customer_id', 'worker_id', 'work_area_id']);
+
             $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
+            $table->foreign('worker_id')->references('id')->on('workers')->cascadeOnDelete();   // EKLE
             $table->foreign('work_area_id')->references('id')->on('work_areas')->cascadeOnDelete();
         });
     }
