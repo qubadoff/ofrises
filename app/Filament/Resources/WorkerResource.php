@@ -116,7 +116,8 @@ class WorkerResource extends Resource
 
                                 DatePicker::make('start_date')
                                     ->label('Start Date')
-                                    ->native(false),
+                                    ->native(false)
+                                ->required(),
 
                                 DatePicker::make('end_date')
                                     ->label('End Date')
@@ -150,6 +151,79 @@ class WorkerResource extends Resource
                                     })->all();
                                 $component->state($state);
                             })
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
+                                $data['customer_id'] = (int) $get('customer_id');
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data, Get $get) {
+                                $data['customer_id'] = (int) $get('customer_id');
+                                return $data;
+                            }),
+                    ])
+                    ->columns(1),
+
+                Section::make('Languages')
+                    ->schema([
+                        Repeater::make('languages')
+                            ->relationship('languages') // Worker::languages()
+                            ->label('Language Levels')
+                            ->defaultItems(0)
+                            ->addActionLabel('Add language')
+                            ->schema([
+                                // General'deki müşteri seçiminden customer_id doldur
+                                Hidden::make('customer_id')
+                                    ->dehydrated(true)
+                                    ->default(fn (Get $get) => (int) $get('customer_id')),
+
+                                // --- Dil seçimi ---
+                                Select::make('language_id')
+                                    ->label('Language')
+                                    // Eğer Language modeli/tablosu varsa:
+                                    ->options(fn () => \App\Models\Language::query()
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id'))
+                                    // Eğer tablo yoksa, üst satırı kaldırıp aşağıdaki sabit dizi kullanın:
+                                    // ->options([
+                                    //     1 => 'Azerbaijani', 2 => 'Turkish', 3 => 'English', 4 => 'Russian', 5 => 'German',
+                                    // ])
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    // Aynı repeater içinde aynı dilin ikinci kez seçilmesini engeller
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+
+                                // --- Seviye seçimi ---
+                                Select::make('language_level_id')
+                                    ->label('Level')
+                                    // Eğer LanguageLevel modeli/tablosu varsa:
+                                    ->options(fn () => \App\Models\LanguageLevel::query()
+                                        ->orderBy('sort_order') // yoksa orderBy('name')
+                                        ->pluck('name', 'id'))
+                                    // Eğer tablo yoksa, üst satırı kaldırıp CEFR sabiti kullanın:
+                                    // ->options([
+                                    //     1 => 'A1 (Beginner)',
+                                    //     2 => 'A2 (Elementary)',
+                                    //     3 => 'B1 (Intermediate)',
+                                    //     4 => 'B2 (Upper-Intermediate)',
+                                    //     5 => 'C1 (Advanced)',
+                                    //     6 => 'C2 (Proficient)',
+                                    // ])
+                                    ->required()
+                                    ->searchable()
+                                    ->preload(),
+                            ])
+                            ->columns(2)
+                            // Form açıldığında/yeniden yüklendiğinde her item'a current customer_id yaz
+                            ->afterStateHydrated(function (Repeater $component, Get $get) {
+                                $cid = (int) $get('customer_id');
+                                $state = collect($component->getState() ?? [])
+                                    ->map(function ($row) use ($cid) {
+                                        $row['customer_id'] = $cid;
+                                        return $row;
+                                    })->all();
+                                $component->state($state);
+                            })
+                            // Kaydetmeden hemen önce customer_id'yi garanti altına al
                             ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
                                 $data['customer_id'] = (int) $get('customer_id');
                                 return $data;
