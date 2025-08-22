@@ -20,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -54,16 +55,18 @@ class WorkerResource extends Resource
 
                     ]),
 
+
                 Section::make('Work Areas')
                     ->schema([
+                        // 1) Çoklu seçim (dehydrate = false)
                         Select::make('work_area_ids')
                             ->label('Select Work Areas')
                             ->multiple()
                             ->searchable()
                             ->preload()
-                            ->dehydrated(false)
+                            ->dehydrated(false) // modele yazmıyoruz
                             ->options(function () {
-                                $areas = WorkArea::query()
+                                $areas = \App\Models\WorkArea::query()
                                     ->select(['id', 'name', 'parent_id'])
                                     ->get();
 
@@ -83,8 +86,10 @@ class WorkerResource extends Resource
                                     ->sort()
                                     ->all();
                             })
-                            ->afterStateHydrated(function (Select $component, ?Worker $record, Get $get) {
+                            // Kayıt açıldığında mevcut bağları yükle
+                            ->afterStateHydrated(function (Select $component, ?\App\Models\Worker $record, Get $get, Set $set) {
                                 if (!$record) return;
+
                                 $customerId = $get('customer_id');
                                 if (!$customerId) return;
 
@@ -93,8 +98,20 @@ class WorkerResource extends Resource
                                     ->pluck('work_areas.id')
                                     ->all();
 
+                                // select state
                                 $component->state($ids);
+                                // 2) gizli alana da aynı state'i yaz
+                                $set('work_area_ids_hidden', $ids);
+                            })
+                            // 3) kullanıcı seçim değiştirirse, gizli alanı güncelle
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                $set('work_area_ids_hidden', $state ?: []);
                             }),
+
+                        // 4) Dehydrate edilen gizli alan (afterSave'de $data içinde kesin olur)
+                        Hidden::make('work_area_ids_hidden')
+                            ->dehydrated(true)
+                            ->default([]),
                     ])
                     ->columns(1),
 
@@ -472,4 +489,23 @@ class WorkerResource extends Resource
             'edit' => Pages\EditWorker::route('/{record}/edit'),
         ];
     }
+
+    protected static function syncWorkAreasForCustomer(\App\Models\Worker $worker, int $customerId, array $workAreaIds): void
+    {
+        $ids = collect($workAreaIds)->filter()->unique()->values();
+
+        // aynı müşteri için önce temizle
+        $worker->workAreas()->wherePivot('customer_id', $customerId)->detach();
+
+        if ($ids->isEmpty()) {
+            return;
+        }
+
+        $payload = $ids->mapWithKeys(fn ($id) => [
+            $id => ['customer_id' => $customerId],
+        ])->all();
+
+        $worker->workAreas()->attach($payload);
+    }
+
 }
