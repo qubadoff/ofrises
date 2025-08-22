@@ -346,10 +346,11 @@ class WorkerResource extends Resource
 
                 Section::make([
                     Select::make('have_a_child')
-                     ->options([
-                         'Have a child' => true,
-                         'No child' => false,
-                     ])
+                        ->label('Have a Child?')
+                        ->options([
+                            true  => 'Have a child',
+                            false => 'No child',
+                        ]),
                 ]),
 
                 Section::make([
