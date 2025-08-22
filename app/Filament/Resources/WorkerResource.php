@@ -9,6 +9,7 @@ use App\Models\Language;
 use App\Models\LanguageLevel;
 use App\Models\WorkArea;
 use App\Models\Worker;
+use Filament\Actions\ForceDeleteAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -468,6 +469,7 @@ class WorkerResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ForceDeleteAction::make(),
                 ]),
             ]);
     }

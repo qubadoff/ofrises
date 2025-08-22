@@ -15,9 +15,13 @@ class WorkerPhotoAndVideo extends Model
         'photos' => 'array',
     ];
 
-
     public function worker(): BelongsTo
     {
-        return $this->belongsTo(Worker::class, 'worker_id');
+        return $this->belongsTo(Worker::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

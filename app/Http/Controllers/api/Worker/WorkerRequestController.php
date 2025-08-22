@@ -6,9 +6,12 @@ use App\Enum\Worker\WorkerStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Worker\WorkerCreateRequest;
 use App\Models\Worker;
+use App\Models\WorkerPhotoAndVideo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
 
 class WorkerRequestController extends Controller
 {
@@ -19,6 +22,15 @@ class WorkerRequestController extends Controller
         $customer = Auth::user();
 
         $data = $request->validated();
+
+        $existingWorker = Worker::query()->where('customer_id', $customer->id)->first();
+
+        if ($existingWorker) {
+            return response()->json([
+                'message' => 'This customer has already been requested.',
+                'worker_id' => $existingWorker->id,
+            ], 400);
+        }
 
         return DB::transaction(function () use ($data, $customer) {
             $worker = Worker::query()->create([
@@ -123,8 +135,6 @@ class WorkerRequestController extends Controller
                 }
             }
 
-
-
             return response()->json([
                 'message' => 'Worker created successfully.',
                 'data'    => [
@@ -135,4 +145,58 @@ class WorkerRequestController extends Controller
             ], 201);
         });
     }
+
+    public function uploadPhotoAndVideo(Request $request): JsonResponse
+    {
+        $customer = Auth::user();
+
+        $request->validate([
+            'worker_id' => 'required|exists:workers,id',
+            'photos.*'  => 'nullable|image|max:5120',
+            'video'     => 'nullable|mimes:mp4,mov,avi,webm|max:51200',
+        ]);
+
+        $workerId = $request->input('worker_id');
+
+        if (WorkerPhotoAndVideo::query()->where('customer_id', $customer->id)->where('worker_id', $workerId)->exists()) {
+            return response()->json([
+                'message' => 'This worker already has a image and video.',
+            ], 400);
+        }
+
+        $photos = [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $path = $photo->store("worker/{$workerId}/photos", 'public');
+                $photos[] = $path;
+            }
+        }
+
+        $videoPath = null;
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store("worker/{$workerId}/videos", 'public');
+        }
+
+        $record = WorkerPhotoAndVideo::query()->create([
+            'customer_id' => $customer->id,
+            'worker_id'   => $workerId,
+            'photos'      => json_encode($photos),
+            'video'       => $videoPath,
+        ]);
+
+        $photoUrls = collect($photos)->map(fn($p) => Storage::url($p))->all();
+        $videoUrl  = $videoPath ? Storage::url($videoPath) : null;
+
+        return response()->json([
+            'message' => 'The image and videos was uploaded successfully.',
+            'data'    => [
+                'id'          => $record->id,
+                'customer_id' => $record->customer_id,
+                'worker_id'   => $record->worker_id,
+                'photos'      => $photoUrls,
+                'video'       => $videoUrl,
+            ],
+        ]);
+    }
+
 }
