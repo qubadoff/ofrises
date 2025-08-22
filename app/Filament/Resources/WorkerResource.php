@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enum\Worker\WorkerStatusEnum;
 use App\Filament\Resources\WorkerResource\Pages;
 use App\Models\Customer;
+use App\Models\EducationType;
 use App\Models\Language;
 use App\Models\LanguageLevel;
 use App\Models\WorkArea;
@@ -122,7 +123,9 @@ class WorkerResource extends Resource
 
                                 Select::make('education_type')
                                     ->label('Education Type')
-                                    ->relationship('educationType', 'name')
+                                    ->options(fn () => EducationType::query()
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id'))
                                     ->required()
                                     ->native(false),
 
