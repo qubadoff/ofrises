@@ -216,7 +216,7 @@ class WorkerRequestController extends Controller
                 'data'    => [
                     'id'          => $record->id,
                     'customer_id' => $record->customer_id,
-                    'worker_id'   => (string) $record->worker_id,
+                    'worker_id'   => $record->worker_id,
                     'photos'      => $photoUrls,
                     'video'       => $videoUrl,
                 ],
