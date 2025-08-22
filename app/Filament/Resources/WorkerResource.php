@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkerResource\Pages;
 use App\Models\Customer;
+use App\Models\Language;
+use App\Models\LanguageLevel;
 use App\Models\WorkArea;
 use App\Models\Worker;
 use Filament\Forms\Components\DatePicker;
@@ -71,7 +73,7 @@ class WorkerResource extends Resource
                                     ->sort()
                                     ->all();
                             })
-                            ->afterStateHydrated(function (Select $component, ?\App\Models\Worker $record, Get $get) {
+                            ->afterStateHydrated(function (Select $component, ?Worker $record, Get $get) {
                                 if (!$record) return;
                                 $customerId = $get('customer_id');
                                 if (!$customerId) return;
@@ -170,20 +172,15 @@ class WorkerResource extends Resource
                             ->defaultItems(0)
                             ->addActionLabel('Add language')
                             ->schema([
-                                // General'deki müşteri seçiminden customer_id doldur
                                 Hidden::make('customer_id')
                                     ->dehydrated(true)
                                     ->default(fn (Get $get) => (int) $get('customer_id')),
 
                                 Select::make('language_id')
                                     ->label('Language')
-                                    ->options(fn () => \App\Models\Language::query()
+                                    ->options(fn () => Language::query()
                                         ->orderBy('name')
                                         ->pluck('name', 'id'))
-                                    // Eğer tablo yoksa, üst satırı kaldırıp aşağıdaki sabit dizi kullanın:
-                                    // ->options([
-                                    //     1 => 'Azerbaijani', 2 => 'Turkish', 3 => 'English', 4 => 'Russian', 5 => 'German',
-                                    // ])
                                     ->required()
                                     ->searchable()
                                     ->preload()
@@ -191,14 +188,13 @@ class WorkerResource extends Resource
 
                                 Select::make('language_level_id')
                                     ->label('Level')
-                                    ->options(fn () => \App\Models\LanguageLevel::query()
+                                    ->options(fn () => LanguageLevel::query()
                                         ->pluck('name', 'id'))
                                     ->required()
                                     ->searchable()
                                     ->preload(),
                             ])
-                            ->columns(2)
-                            // Form açıldığında/yeniden yüklendiğinde her item'a current customer_id yaz
+                            ->columns()
                             ->afterStateHydrated(function (Repeater $component, Get $get) {
                                 $cid = (int) $get('customer_id');
                                 $state = collect($component->getState() ?? [])
@@ -208,7 +204,6 @@ class WorkerResource extends Resource
                                     })->all();
                                 $component->state($state);
                             })
-                            // Kaydetmeden hemen önce customer_id'yi garanti altına al
                             ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
                                 $data['customer_id'] = (int) $get('customer_id');
                                 return $data;
@@ -219,6 +214,64 @@ class WorkerResource extends Resource
                             }),
                     ])
                     ->columns(1),
+
+                Section::make('Work Experiences')
+                    ->schema([
+                        Repeater::make('workExperience')
+                        ->label('Work Experience')
+                        ->defaultItems(0)
+                        ->addActionLabel('Add work experience')
+                        ->schema([
+                            Hidden::make('customer_id')
+                                ->dehydrated(true)
+                                ->default(fn (Get $get) => (int) $get('customer_id')),
+                            TextInput::make('company_name')->required(),
+                            TextInput::make('position_name')->required(),
+
+                            DatePicker::make('start_date')
+                                ->label('Start Date')
+                                ->native(false)
+                                ->required(),
+
+                            DatePicker::make('end_date')
+                                ->label('End Date')
+                                ->native(false)
+                                ->disabled(fn (Get $get) => (bool) $get('is_present'))
+                                ->rule(function (Get $get) {
+                                    if (! $get('is_present')) {
+                                        return 'after_or_equal:start_date';
+                                    }
+                                    return null;
+                                }),
+
+                            Toggle::make('is_present')
+                                ->label('Still Studying / Present')
+                                ->inline(false)
+                                ->default(false)
+                                ->reactive(),
+
+                            Textarea::make('workload'),
+                            Textarea::make('description'),
+                        ])
+                        ->columns()
+                            ->afterStateHydrated(function (Repeater $component, Get $get) {
+                                $cid = (int) $get('customer_id');
+                                $state = collect($component->getState() ?? [])
+                                    ->map(function ($row) use ($cid) {
+                                        $row['customer_id'] = $cid;
+                                        return $row;
+                                    })->all();
+                                $component->state($state);
+                            })
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data, Get $get) {
+                                $data['customer_id'] = (int) $get('customer_id');
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data, Get $get) {
+                                $data['customer_id'] = (int) $get('customer_id');
+                                return $data;
+                            }),
+                    ]),
 
                 Section::make([
                     Select::make('work_type_id')

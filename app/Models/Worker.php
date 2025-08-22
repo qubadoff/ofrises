@@ -94,4 +94,9 @@ class Worker extends Model
     {
         return $this->hasMany(WorkerLanguage::class, 'worker_id');
     }
+
+    public function workExperience(): HasMany
+    {
+        return $this->hasMany(WorkerExperience::class, 'worker_id');
+    }
 }
