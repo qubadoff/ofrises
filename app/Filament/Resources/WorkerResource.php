@@ -56,7 +56,7 @@ class WorkerResource extends Resource
 
                 Section::make('Work Areas')
                     ->schema([
-                        Select::make('work_area_id')
+                        Select::make('work_area_ids')
                             ->label('Select Work Areas')
                             ->multiple()
                             ->searchable()

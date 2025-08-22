@@ -14,7 +14,7 @@ class CreateWorker extends CreateRecord
     protected function afterCreate(): void
     {
         $data = $this->form->getState();
-        $this->syncWorkAreasForCustomer($this->record, $data['customer_id'] ?? null, $data['work_area_id'] ?? []);
+        $this->syncWorkAreasForCustomer($this->record, $data['customer_id'] ?? null, $data['work_area_ids'] ?? []);
     }
 
     private function syncWorkAreasForCustomer(Worker $worker, ?int $customerId, array $workAreaIds): void
