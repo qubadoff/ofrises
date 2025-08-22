@@ -118,4 +118,9 @@ class Worker extends Model
     {
         return $this->hasOne(WorkerPhotoAndVideo::class, 'worker_id');
     }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
 }

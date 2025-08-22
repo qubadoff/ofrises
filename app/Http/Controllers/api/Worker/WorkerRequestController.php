@@ -85,6 +85,23 @@ class WorkerRequestController extends Controller
                 }
             }
 
+            if (!empty($data['languages']) && is_array($data['languages'])) {
+                $rows = collect($data['languages'])
+                    ->filter(fn ($row) => !empty($row['language_id']) && !empty($row['language_level_id']))
+                    ->map(function ($row) use ($customer) {
+                        return [
+                            'customer_id'       => $customer->id,
+                            'language_id'       => (int) $row['language_id'],
+                            'language_level_id' => (int) $row['language_level_id'],
+                        ];
+                    })->values()->all();
+
+                if (!empty($rows)) {
+                    $worker->languages()->createMany($rows);
+                }
+            }
+
+
             return response()->json([
                 'message' => 'Worker created successfully.',
                 'data'    => [

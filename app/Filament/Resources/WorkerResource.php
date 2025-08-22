@@ -23,6 +23,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class WorkerResource extends Resource
@@ -451,7 +452,10 @@ class WorkerResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->sortable(),
+                TextColumn::make('customer.name')->searchable(),
+                TextColumn::make('customer.surname')->searchable(),
+                TextColumn::make('status')->badge(),
             ])
             ->filters([
                 //

@@ -76,6 +76,11 @@ class WorkerCreateRequest extends FormRequest
             'educations.*.is_present'      => 'boolean',
             'educations.*.description'     => 'nullable|string|max:2000',
 
+            'languages' => 'nullable|array',
+            'languages.*.language_id' => 'required|integer|exists:languages,id',
+            'languages.*.language_level_id' => 'required|integer|exists:language_levels,id',
+
+
         ];
     }
 }
