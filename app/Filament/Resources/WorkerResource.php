@@ -33,62 +33,60 @@ class WorkerResource extends Resource
         return $form
             ->schema([
 
-                Section::make([
-                    Section::make('General')
-                        ->schema([
-                            Select::make('customer_id')
-                                ->label('Customer')
-                                ->options(fn () => Customer::query()->orderBy('name')->pluck('name', 'id'))
-                                ->searchable()
-                                ->preload()
-                                ->required()
-                                ->reactive()
-                                ->dehydrated(false),
-                        ]),
+                Section::make('General')
+                    ->schema([
+                        Select::make('customer_id')
+                            ->label('Customer')
+                            ->options(fn () => Customer::query()->orderBy('name')->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->reactive()
+                            ->dehydrated(false),
+                    ]),
 
-                    Section::make('Work Areas')
-                        ->schema([
-                            Select::make('work_area_ids')
-                                ->label('Select Work Areas')
-                                ->multiple()
-                                ->searchable()
-                                ->preload()
-                                ->dehydrated(false)
-                                ->options(function () {
-                                    $areas = WorkArea::query()
-                                        ->select(['id', 'name', 'parent_id'])
-                                        ->get();
+                Section::make('Work Areas')
+                    ->schema([
+                        Select::make('work_area_ids')
+                            ->label('Select Work Areas')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->dehydrated(false)
+                            ->options(function () {
+                                $areas = WorkArea::query()
+                                    ->select(['id', 'name', 'parent_id'])
+                                    ->get();
 
-                                    $byId = $areas->keyBy('id');
-                                    $cache = [];
+                                $byId = $areas->keyBy('id');
+                                $cache = [];
 
-                                    $path = function ($id) use (&$path, $byId, &$cache) {
-                                        if (isset($cache[$id])) return $cache[$id];
-                                        $n = $byId[$id] ?? null;
-                                        if (!$n) return '';
-                                        if (!$n->parent_id) return $cache[$id] = $n->name;
-                                        return $cache[$id] = $path($n->parent_id) . ' › ' . $n->name;
-                                    };
+                                $path = function ($id) use (&$path, $byId, &$cache) {
+                                    if (isset($cache[$id])) return $cache[$id];
+                                    $n = $byId[$id] ?? null;
+                                    if (!$n) return '';
+                                    if (!$n->parent_id) return $cache[$id] = $n->name;
+                                    return $cache[$id] = $path($n->parent_id) . ' › ' . $n->name;
+                                };
 
-                                    return $areas
-                                        ->mapWithKeys(fn ($a) => [$a->id => $path($a->id)])
-                                        ->sort()
-                                        ->all();
-                                })
-                                ->afterStateHydrated(function (Select $component, ?Worker $record, Get $get) {
-                                    if (!$record) return;
-                                    $customerId = $get('customer_id');
-                                    if (!$customerId) return;
+                                return $areas
+                                    ->mapWithKeys(fn ($a) => [$a->id => $path($a->id)])
+                                    ->sort()
+                                    ->all();
+                            })
+                            ->afterStateHydrated(function (Select $component, ?Worker $record, Get $get) {
+                                if (!$record) return;
+                                $customerId = $get('customer_id');
+                                if (!$customerId) return;
 
-                                    $ids = $record->workAreas()
-                                        ->wherePivot('customer_id', $customerId)
-                                        ->pluck('work_areas.id')
-                                        ->all();
+                                $ids = $record->workAreas()
+                                    ->wherePivot('customer_id', $customerId)
+                                    ->pluck('work_areas.id')
+                                    ->all();
 
-                                    $component->state($ids);
-                                }),
-                        ]),
-                ])->columns(3),
+                                $component->state($ids);
+                            }),
+                    ]),
 
                 Section::make('Education')
                     ->schema([
