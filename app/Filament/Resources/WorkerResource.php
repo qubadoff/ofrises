@@ -22,35 +22,28 @@ class WorkerResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Work Areas')
-                    ->schema([
-                        Select::make('work_areas') // alan adı verildi
-                        ->label('Work Areas')
-                            ->multiple()
-                            ->preload()
-                            ->searchable()
-                            ->relationship(
-                                name: 'workAreas',           // Worker modelindeki ilişki adı
-                                titleAttribute: 'name',
-                                modifyQueryUsing: fn (Builder $q) => $q->leaves()->orderBy('name')
-                            )
-                            ->saveRelationshipsUsing(function (Worker $record, ?array $state) {
-                                $customerId = auth()->user()?->customer_id;
-                                $ids = collect($state ?? [])->unique()->values();
+                Select::make('work_areas')
+                    ->label('Work Areas')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->relationship(
+                        'workAreas', // Relationship method name in Worker model
+                        'name',      // Title attribute
+                        fn (Builder $q) => $q->leaves()->orderBy('name')
+                    )
+                    ->saveRelationshipsUsing(function (Worker $record, ?array $state) {
+                        $customerId = auth()->user()?->customer_id;
+                        $ids = collect($state ?? [])->unique()->values();
+                        $record->workAreas()
+                            ->wherePivot('customer_id', $customerId)
+                            ->detach();
+                        $payload = $ids->mapWithKeys(fn ($id) => [
+                            $id => ['customer_id' => $customerId],
+                        ])->all();
+                        $record->workAreas()->attach($payload);
+                    }),
 
-                                // Bu müşteri için mevcut pivotları temizle
-                                $record->workAreas()
-                                    ->wherePivot('customer_id', $customerId)
-                                    ->detach();
-
-                                // Seçilenleri customer_id ile ekle
-                                $payload = $ids->mapWithKeys(fn ($id) => [
-                                    $id => ['customer_id' => $customerId],
-                                ])->all();
-
-                                $record->workAreas()->attach($payload);
-                            }),
-                    ]),
             ]);
     }
 

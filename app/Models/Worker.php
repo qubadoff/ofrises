@@ -13,14 +13,7 @@ class Worker extends Model
 
     public function workAreas(): BelongsToMany
     {
-        return $this->belongsToMany(
-            WorkArea::class,
-            'worker_work_areas',
-            'worker_id',
-            'work_area_id'
-        )
-            ->withPivot('customer_id')
-            ->withTimestamps();
+        return $this->belongsToMany(WorkArea::class)->withPivot('customer_id');
     }
 
     public function workAreasForCustomer(?int $customerId = null): BelongsToMany
