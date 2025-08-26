@@ -39,7 +39,7 @@ class WorkerController extends Controller
 
     public function currencies(): JsonResponse
     {
-        $currency = Currency::query()->select('id', 'name', 'icon')->first();
+        $currency = Currency::query()->select('id', 'name', 'icon')->get();
 
         return response()->json([
             'id'   => $currency->id,
