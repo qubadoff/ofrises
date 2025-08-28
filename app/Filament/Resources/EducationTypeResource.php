@@ -6,6 +6,7 @@ use App\Filament\Resources\EducationTypeResource\Pages;
 use App\Models\EducationType;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class EducationTypeResource extends Resource
 {
+
+    use Translatable;
+
     protected static ?string $model = EducationType::class;
 
     protected static ?string $navigationGroup = 'Workers';
