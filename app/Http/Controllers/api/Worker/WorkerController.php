@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Worker;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CarModelResource;
 use App\Models\CarModel;
 use App\Models\Citizenship;
 use App\Models\Currency;
@@ -86,7 +87,7 @@ class WorkerController extends Controller
 
     public function carModels(): JsonResponse
     {
-        return response()->json(CarModel::all());
+        return response()->json(CarModelResource::collection(CarModel::all()));
     }
 
     public function languages(): JsonResponse
