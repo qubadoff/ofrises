@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CarModelResource\Pages;
 use App\Filament\Resources\CarModelResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\LocaleSwitcher;
 
 class ListCarModels extends ListRecords
 {
@@ -14,6 +15,7 @@ class ListCarModels extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            LocaleSwitcher::make()
         ];
     }
 }

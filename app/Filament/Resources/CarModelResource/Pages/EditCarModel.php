@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CarModelResource\Pages;
 use App\Filament\Resources\CarModelResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\LocaleSwitcher;
 
 class EditCarModel extends EditRecord
 {
@@ -14,6 +15,7 @@ class EditCarModel extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            LocaleSwitcher::make()
         ];
     }
 }
