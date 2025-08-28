@@ -7,6 +7,7 @@ use App\Models\WorkType;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -14,6 +15,8 @@ use Filament\Tables\Table;
 
 class WorkTypeResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = WorkType::class;
 
     protected static ?string $navigationGroup = 'Workers';
