@@ -6,6 +6,7 @@ use App\Filament\Resources\LanguageLevelResource\Pages;
 use App\Models\LanguageLevel;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -13,6 +14,8 @@ use Filament\Tables\Table;
 
 class LanguageLevelResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = LanguageLevel::class;
 
     protected static ?string $navigationGroup = 'Workers';
