@@ -13,7 +13,10 @@ class WorkArea extends Model
     use HasTranslations;
 
     protected $table = 'work_areas';
+
     protected $guarded = ['id'];
+
+    public array $translatable = ['name'];
 
     public function parent(): BelongsTo
     {
