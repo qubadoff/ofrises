@@ -10,6 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditLanguage extends EditRecord
 {
     use EditRecord\Concerns\Translatable;
+
     protected static string $resource = LanguageResource::class;
 
     protected function getHeaderActions(): array

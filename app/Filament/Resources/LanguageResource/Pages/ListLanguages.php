@@ -9,7 +9,9 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListLanguages extends ListRecords
 {
-    use EditRecord\Concerns\Translatable;
+
+    use ListRecords\Concerns\Translatable;
+
     protected static string $resource = LanguageResource::class;
 
     protected function getHeaderActions(): array
