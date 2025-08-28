@@ -14,4 +14,8 @@ class SoftSkill extends Model
     protected $guarded = ['id'];
 
     public array $translatable = ['name'];
+
+    protected $casts = [
+        'name' => 'array',
+    ];
 }

@@ -18,6 +18,10 @@ class WorkArea extends Model
 
     public array $translatable = ['name'];
 
+    protected $casts = [
+        'name' => 'array',
+    ];
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(WorkArea::class, 'parent_id');

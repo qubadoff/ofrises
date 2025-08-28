@@ -14,4 +14,8 @@ class Citizenship extends Model
     protected $table = 'citizenships';
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'name' => 'array',
+    ];
 }
