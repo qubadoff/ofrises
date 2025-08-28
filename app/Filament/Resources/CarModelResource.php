@@ -6,6 +6,7 @@ use App\Filament\Resources\CarModelResource\Pages;
 use App\Models\CarModel;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -14,6 +15,8 @@ use Filament\Tables\Table;
 
 class CarModelResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = CarModel::class;
 
     protected static ?string $navigationGroup = 'Workers';
