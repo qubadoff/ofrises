@@ -3,10 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class MaritalStatus extends Model
 {
+    use HasTranslations;
+
     protected $table = 'marital_statuses';
 
     protected $guarded = ['id'];
+
+    public array $translatable = ['name'];
 }
