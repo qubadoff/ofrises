@@ -9,6 +9,8 @@ use Filament\Actions\LocaleSwitcher;
 
 class ListCarModels extends ListRecords
 {
+    use ListRecords\Concerns\Translatable;
+
     protected static string $resource = CarModelResource::class;
 
     protected function getHeaderActions(): array

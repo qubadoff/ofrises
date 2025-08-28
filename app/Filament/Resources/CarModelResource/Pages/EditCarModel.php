@@ -9,6 +9,8 @@ use Filament\Actions\LocaleSwitcher;
 
 class EditCarModel extends EditRecord
 {
+    use EditRecord\Concerns\Translatable;
+
     protected static string $resource = CarModelResource::class;
 
     protected function getHeaderActions(): array
