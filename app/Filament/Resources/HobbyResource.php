@@ -6,6 +6,7 @@ use App\Filament\Resources\HobbyResource\Pages;
 use App\Models\Hobby;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -13,6 +14,8 @@ use Filament\Tables\Table;
 
 class HobbyResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Hobby::class;
 
     protected static ?string $navigationGroup = 'Workers';
