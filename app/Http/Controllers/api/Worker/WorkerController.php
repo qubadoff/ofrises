@@ -18,6 +18,7 @@ use App\Models\SoftSkill;
 use App\Models\WorkArea;
 use App\Models\WorkExpectation;
 use App\Models\WorkType;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 
 class WorkerController extends Controller
@@ -84,9 +85,14 @@ class WorkerController extends Controller
         return response()->json(DriverLicense::all());
     }
 
-    public function carModels(): JsonResponse
+    public function carModels(): Collection|\Illuminate\Support\Collection
     {
-        return response()->json(CarModel::all());
+        $locale = app()->getLocale();
+
+        return CarModel::all()->map(fn($item) => [
+            'id' => $item->id,
+            'name' => $item->getTranslation('name', $locale),
+        ]);
     }
 
     public function languages(): JsonResponse
