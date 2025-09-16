@@ -378,7 +378,7 @@ class WorkerResource extends Resource
                     Repeater::make('hardSkills')
                         ->relationship('hardSkills') // Worker modelindeki ilişki
                         ->schema([
-                            Select::make('hardSkills')
+                            Select::make('hardSkill')
                                 ->label('Hard Skill')
                                 ->relationship('hardSkill', 'name')
                                 ->required(),
@@ -395,7 +395,7 @@ class WorkerResource extends Resource
                     Repeater::make('softSkills')
                         ->relationship('softSkills')
                         ->schema([
-                            Select::make('softSkills')
+                            Select::make('softSkill')
                                 ->label('Soft Skill')
                                 ->relationship('softSkill', 'name')
                                 ->required(),
