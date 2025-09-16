@@ -33,16 +33,20 @@ class WorkerController extends Controller
             ->whereNull('parent_id')
             ->orderBy('id')
             ->get()
-            ->map(fn ($item) => [
-                'id'       => $item->id,
-                'name'     => $item->getTranslation('name', $locale),
-                'children' => $item->children->map(fn ($child) => [
-                    'id'   => $child->id,
-                    'name' => $child->getTranslation('name', $locale),
-                ]),
-            ]);
+            ->map(fn ($item) => $this->formatWorkArea($item, $locale));
 
         return response()->json($workAreas);
+    }
+
+    private function formatWorkArea($workArea, $locale): array
+    {
+        return [
+            'id'       => $workArea->id,
+            'name'     => $workArea->getTranslation('name', $locale),
+            'children' => $workArea->children->map(
+                fn ($child) => $this->formatWorkArea($child, $locale)
+            ),
+        ];
     }
 
     public function workType(): JsonResponse
