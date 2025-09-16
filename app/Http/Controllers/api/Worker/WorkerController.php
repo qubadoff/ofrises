@@ -25,50 +25,48 @@ use Illuminate\Support\Facades\App;
 
 class WorkerController extends Controller
 {
+    private string $locale;
+
+    public function __construct()
+    {
+        $this->locale = App::getLocale();
+    }
+
     public function workArea(): JsonResponse
     {
-        $locale = App::getLocale();
-
         $workAreas = WorkArea::with('children')
             ->whereNull('parent_id')
             ->orderBy('id')
             ->get()
-            ->map(fn ($item) => $this->formatWorkArea($item, $locale));
+            ->map(fn ($item) => $this->formatWorkArea($item));
 
         return response()->json($workAreas);
     }
 
-    private function formatWorkArea($workArea, $locale): array
+    private function formatWorkArea($workArea): array
     {
         return [
             'id'       => $workArea->id,
-            'name'     => $workArea->getTranslation('name', $locale),
+            'name'     => $workArea->getTranslation('name', $this->locale),
             'children' => $workArea->children->map(
-                fn ($child) => $this->formatWorkArea($child, $locale)
-            ),
+                fn ($child) => $this->formatWorkArea($child)
+            )->toArray(),
         ];
     }
 
     public function workType(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            WorkType::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            WorkType::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function currencies(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
             Currency::all()->map(fn ($item) => [
                 'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
+                'name' => $item->getTranslation('name', $this->locale),
                 'icon' => url('/storage/' . $item->icon),
             ])
         );
@@ -76,145 +74,93 @@ class WorkerController extends Controller
 
     public function salaryType(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            SalaryType::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            SalaryType::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function workExpectation(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            WorkExpectation::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            WorkExpectation::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function citizenship(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            Citizenship::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            Citizenship::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function maritalStatus(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            MaritalStatus::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            MaritalStatus::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function militaryStatus(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            MilitaryStatus::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            MilitaryStatus::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function driverLicense(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            DriverLicense::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            DriverLicense::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function carModels(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            CarModel::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            CarModel::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function languages(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            Language::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            Language::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function educationType(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            EducationType::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            EducationType::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function hobbies(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            Hobby::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            Hobby::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function hardSkills(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            HardSkill::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            HardSkill::all()->map(fn ($item) => $this->formatItem($item))
         );
     }
 
     public function softSkills(): JsonResponse
     {
-        $locale = App::getLocale();
-
         return response()->json(
-            SoftSkill::all()->map(fn ($item) => [
-                'id'   => $item->id,
-                'name' => $item->getTranslation('name', $locale),
-            ])
+            SoftSkill::all()->map(fn ($item) => $this->formatItem($item))
         );
+    }
+
+    private function formatItem($item): array
+    {
+        return [
+            'id'   => $item->id,
+            'name' => $item->getTranslation('name', $this->locale),
+        ];
     }
 }
