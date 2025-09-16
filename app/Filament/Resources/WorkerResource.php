@@ -375,13 +375,40 @@ class WorkerResource extends Resource
                     ->relationship('hobby', 'name')
                     ->multiple(),
 
-                    Select::make('hard_skill_id')
-                        ->relationship('hardSkill', 'name')
-                        ->multiple(),
+                    Repeater::make('hardSkills')
+                        ->relationship('hardSkills') // Worker modelindeki ilişki
+                        ->schema([
+                            Select::make('hard_skill_id')
+                                ->label('Hard Skill')
+                                ->relationship('hardSkill', 'name')
+                                ->required(),
 
-                    Select::make('soft_skill_id')
-                        ->relationship('softSkill', 'name')
-                        ->multiple(),
+                            TextInput::make('degree')
+                                ->label('Degree')
+                                ->numeric()
+                                ->minValue(1)
+                                ->maxValue(5)
+                                ->required(),
+                        ])
+                        ->columns(),
+
+                    Repeater::make('softSkills')
+                        ->relationship('softSkills')
+                        ->schema([
+                            Select::make('soft_skill_id')
+                                ->label('Soft Skill')
+                                ->relationship('softSkill', 'name')
+                                ->required(),
+
+                            TextInput::make('degree')
+                                ->label('Degree')
+                                ->numeric()
+                                ->minValue(1)
+                                ->maxValue(5)
+                                ->required(),
+                        ])
+                        ->columns(),
+
                 ])->columns(3),
 
                 Section::make([
