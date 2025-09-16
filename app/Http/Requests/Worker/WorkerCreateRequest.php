@@ -54,10 +54,13 @@ class WorkerCreateRequest extends FormRequest
             'hobby_id.*'           => 'integer|distinct|exists:hobbies,id',
 
             'hard_skill_id'        => 'nullable|array',
-            'hard_skill_id.*'      => 'integer|distinct|exists:hard_skills,id',
+            'hard_skill_id.*.id'   => 'required|integer|exists:hard_skills,id',
+            'hard_skill_id.*.degree' => 'required|integer|min:1|max:10',
 
             'soft_skill_id'        => 'nullable|array',
-            'soft_skill_id.*'      => 'integer|distinct|exists:soft_skills,id',
+            'soft_skill_id.*.id'   => 'required|integer|exists:soft_skills,id',
+            'soft_skill_id.*.degree' => 'required|integer|min:1|max:10',
+
 
             'marital_status_id'    => 'nullable|integer|exists:marital_statuses,id',
             'military_status_id'   => 'nullable|integer|exists:military_statuses,id',

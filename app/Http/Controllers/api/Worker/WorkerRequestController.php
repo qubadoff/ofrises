@@ -34,6 +34,7 @@ class WorkerRequestController extends Controller
         }
 
         return DB::transaction(function () use ($data, $customer) {
+
             $worker = Worker::query()->create([
                 'customer_id'        => $customer->id,
 
@@ -134,6 +135,32 @@ class WorkerRequestController extends Controller
                 if (!empty($rows)) {
                     $worker->workExperience()->createMany($rows);
                 }
+            }
+
+            if (!empty($data['hard_skill_id']) && is_array($data['hard_skill_id'])) {
+                $payload = collect($data['hard_skill_id'])
+                    ->filter(fn ($row) => !empty($row['id']) && isset($row['degree']))
+                    ->mapWithKeys(fn ($row) => [
+                        $row['id'] => [
+                            'customer_id' => $customer->id,
+                            'degree'      => (int) $row['degree'],
+                        ]
+                    ])->all();
+
+                $worker->hardSkills()->attach($payload);
+            }
+
+            if (!empty($data['soft_skill_id']) && is_array($data['soft_skill_id'])) {
+                $payload = collect($data['soft_skill_id'])
+                    ->filter(fn ($row) => !empty($row['id']) && isset($row['degree']))
+                    ->mapWithKeys(fn ($row) => [
+                        $row['id'] => [
+                            'customer_id' => $customer->id,
+                            'degree'      => (int) $row['degree'],
+                        ]
+                    ])->all();
+
+                $worker->softSkills()->attach($payload);
             }
 
             return response()->json([

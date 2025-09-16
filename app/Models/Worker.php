@@ -128,4 +128,16 @@ class Worker extends Model
     {
         return $this->belongsTo(EducationType::class, 'education_type_id');
     }
+
+    public function hardSkills(): BelongsToMany
+    {
+        return $this->belongsToMany(HardSkill::class, 'worker_hard_skill')
+            ->withPivot(['customer_id', 'degree']);
+    }
+
+    public function softSkills(): BelongsToMany
+    {
+        return $this->belongsToMany(SoftSkill::class, 'worker_soft_skill')
+            ->withPivot(['customer_id', 'degree']);
+    }
 }
