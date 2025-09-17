@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\Company;
 use App\Enum\Company\CompanyStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\CompanyCreateRequest;
+use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -51,7 +52,7 @@ class CompanyController extends Controller
 
             return response()->json([
                 'message' => 'Company created successfully',
-                'data'    => $company
+                'company'    => new CompanyResource($company),
             ], 201);
 
         } catch (Exception $e) {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\Company\CompanyStatusEnum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
@@ -18,4 +19,9 @@ class Company extends Model
         'status' => CompanyStatusEnum::class,
         'media' => 'array',
     ];
+
+    public function workArea(): BelongsTo
+    {
+        return $this->belongsTo(WorkArea::class, 'work_area_id', 'id');
+    }
 }
