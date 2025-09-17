@@ -9,6 +9,7 @@ use App\Models\EducationType;
 use App\Models\HardSkill;
 use App\Models\Language;
 use App\Models\LanguageLevel;
+use App\Models\SoftSkill;
 use App\Models\WorkArea;
 use App\Models\Worker;
 use Filament\Forms\Components\DatePicker;
@@ -407,8 +408,40 @@ class WorkerResource extends Resource
                             ->mutateRelationshipDataBeforeSaveUsing(function (array $data) {
                                 return $data;
                             }),
-                    ])
-                    ->columns(1),
+                    ])->columns(),
+
+
+                Section::make('Soft Skills')
+                    ->schema([
+                        Repeater::make('softSkills')
+                            ->relationship('softSkills')
+                            ->label('Soft Skills')
+                            ->defaultItems(0)
+                            ->addActionLabel('Add Soft Skill')
+                            ->schema([
+                                Select::make('id')
+                                ->label('Soft Skill')
+                                    ->options(SoftSkill::query()
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id'))
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+
+                                TextInput::make('degree')
+                                    ->label('Level')
+                                    ->numeric()
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data) {
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data) {
+                                return $data;
+                            }),
+                    ])->columns(),
 
 
                 Section::make([
