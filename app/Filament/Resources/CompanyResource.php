@@ -39,8 +39,6 @@ class CompanyResource extends Resource
                 TextColumn::make('workArea.name')->label('Work Area')->searchable(),
                 TextColumn::make('created_date')->sortable()->date(),
                 TextColumn::make('location')->label('Location')->searchable(),
-                TextColumn::make('latitude')->label('Latitude')->searchable(),
-                TextColumn::make('longitude')->label('Longitude')->searchable(),
                 TextColumn::make('phone')->label('Phone')->searchable(),
                 TextColumn::make('email')->label('Email')->searchable(),
                 TextColumn::make('employee_count')->label('Employee count')->sortable(),
