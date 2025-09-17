@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\Company\CompanyStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
@@ -23,5 +24,10 @@ class Company extends Model
     public function workArea(): BelongsTo
     {
         return $this->belongsTo(WorkArea::class, 'work_area_id', 'id');
+    }
+
+    public function missions(): HasMany
+    {
+        return $this->hasMany(CompanyMission::class);
     }
 }

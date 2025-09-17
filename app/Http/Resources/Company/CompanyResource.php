@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Company;
 
 use App\Enum\Company\CompanyStatusEnum;
-use App\Filament\Resources\WorkAreaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -41,7 +40,8 @@ class CompanyResource extends JsonResource
                 'name' => $this->status instanceof CompanyStatusEnum
                     ? $this->status->getLabel()
                     : $this->status,
-            ]
+            ],
+            'missions'        => CompanyMissionResource::collection($this->whenLoaded('missions')),
         ];
     }
 }

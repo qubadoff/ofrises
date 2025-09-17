@@ -48,6 +48,15 @@ class CompanyController extends Controller
 
             $company->save();
 
+            if ($request->has('missions') && is_array($request->missions)) {
+                foreach ($request->missions as $mission) {
+                    $company->missions()->create([
+                        'name' => $mission['name'],
+                        'description' => $mission['description'],
+                    ]);
+                }
+            }
+
             DB::commit();
 
             return response()->json([
