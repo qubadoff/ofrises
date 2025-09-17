@@ -52,6 +52,10 @@ class CompanyCreateRequest extends FormRequest
             'missions'       => ['nullable', 'array'],
             'missions.*.name'        => ['nullable', 'string', 'max:255'],
             'missions.*.description' => ['nullable', 'string'],
+
+            'why_choose_us' => ['nullable', 'array'],
+            'why_choose_us.*.name' => ['nullable', 'string', 'max:255'],
+            'why_choose_us.*.description' => ['nullable', 'string'],
         ];
     }
 }

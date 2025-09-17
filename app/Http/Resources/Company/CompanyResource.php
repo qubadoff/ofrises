@@ -42,6 +42,7 @@ class CompanyResource extends JsonResource
                     : $this->status,
             ],
             'missions'        => CompanyMissionResource::collection($this->whenLoaded('missions')),
+            'why_choose_us' => CompanyWhyChooseUsResource::collection($this->whenLoaded('whyChooseUs')),
         ];
     }
 }

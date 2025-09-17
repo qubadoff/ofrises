@@ -30,4 +30,9 @@ class Company extends Model
     {
         return $this->hasMany(CompanyMission::class);
     }
+
+    public function whyChooseUs(): HasMany
+    {
+        return $this->hasMany(CompanyWhyChooseUs::class);
+    }
 }

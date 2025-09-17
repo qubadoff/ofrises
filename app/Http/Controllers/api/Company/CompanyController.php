@@ -58,6 +58,15 @@ class CompanyController extends Controller
                 }
             }
 
+            if ($request->has('why_choose_us') && is_array($request->why_choose_us)) {
+                foreach ($request->why_choose_us as $item) {
+                    $company->whyChooseUs()->create([
+                        'name' => $item['name'] ?? null,
+                        'description' => $item['description'] ?? null,
+                    ]);
+                }
+            }
+
             DB::commit();
 
             return response()->json([
