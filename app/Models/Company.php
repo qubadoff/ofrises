@@ -21,6 +21,11 @@ class Company extends Model
         'media' => 'array',
     ];
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     public function workArea(): BelongsTo
     {
         return $this->belongsTo(WorkArea::class, 'work_area_id', 'id');
