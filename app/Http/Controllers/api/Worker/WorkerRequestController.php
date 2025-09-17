@@ -5,10 +5,12 @@ namespace App\Http\Controllers\api\Worker;
 use App\Enum\Worker\WorkerStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Worker\WorkerCreateRequest;
+use App\Http\Resources\Worker\WorkerCVListResource;
 use App\Models\Worker;
 use App\Models\WorkerPhotoAndVideo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -251,4 +253,12 @@ class WorkerRequestController extends Controller
         });
     }
 
+    public function workerCVList(): AnonymousResourceCollection
+    {
+        $customer = Auth::user();
+
+        $workerCV = Worker::query()->where('customer_id', $customer->id)->get();
+
+        return WorkerCVListResource::collection($workerCV);
+    }
 }
