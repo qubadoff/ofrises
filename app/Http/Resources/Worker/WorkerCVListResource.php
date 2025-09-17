@@ -71,13 +71,13 @@ class WorkerCVListResource extends JsonResource
                     'id'   => $type->id,
                     'name' => $type->name,
                 ]),
-            'car_model_id' => CarModel::query()->whereIn('id', (array) $this->car_model_id)
+            'car_model' => CarModel::query()->whereIn('id', (array) $this->car_model_id)
                 ->get()
                 ->map(fn ($type) => [
                     'id'   => $type->id,
                     'name' => $type->name,
                 ]),
-            'hobby_id' => Hobby::query()->whereIn('id', (array) $this->hobby_id)
+            'hobby' => Hobby::query()->whereIn('id', (array) $this->hobby_id)
                 ->get()
                 ->map(fn ($type) => [
                     'id'   => $type->id,
