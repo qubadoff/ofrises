@@ -48,6 +48,10 @@ class CompanyCreateRequest extends FormRequest
                     }
                 }
             ],
+
+            'missions'       => ['nullable', 'array'],
+            'missions.*.name'        => ['nullable', 'string', 'max:255'],
+            'missions.*.description' => ['nullable', 'string'],
         ];
     }
 }

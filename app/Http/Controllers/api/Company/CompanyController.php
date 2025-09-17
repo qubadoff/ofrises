@@ -51,8 +51,8 @@ class CompanyController extends Controller
             if ($request->has('missions') && is_array($request->missions)) {
                 foreach ($request->missions as $mission) {
                     $company->missions()->create([
-                        'name' => $mission['name'],
-                        'description' => $mission['description'],
+                        'name' => $mission['name'] ?? null,
+                        'description' => $mission['description'] ?? null,
                     ]);
                 }
             }
