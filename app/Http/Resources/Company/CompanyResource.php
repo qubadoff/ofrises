@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Company;
 
+use App\Enum\Company\CompanyStatusEnum;
 use App\Filament\Resources\WorkAreaResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,11 +30,17 @@ class CompanyResource extends JsonResource
             'phone' => $this->phone,
             'email' => $this->email,
             'employee_count' => $this->employee_count,
-            'profile_photo' => url('/') . "/storage/" . $this->profile_photo,
-            'media' => $this->media->map(fn ($media) => url("storage/" . $media->media)),
+            'profile_photo' => $this->profile_photo
+                ? url("storage/" . $this->profile_photo)
+                : null,
+            'media' => $this->media
+                ? collect($this->media)->map(fn ($media) => url("storage/" . $media))
+                : [],
             'status' => [
                 'id' => $this->status,
-                'name' => $this->status->getLable(),
+                'name' => $this->status instanceof CompanyStatusEnum
+                    ? $this->status->getLabel()
+                    : $this->status,
             ]
         ];
     }
