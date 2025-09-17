@@ -8,6 +8,7 @@ use App\Http\Requests\Company\CompanyCreateRequest;
 use App\Models\Company;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
@@ -18,8 +19,7 @@ class CompanyController extends Controller
 
         try {
             $company = new Company();
-
-            $company->customer_id    = auth()->user()->id;
+            $company->customer_id    = Auth::user()->id;
             $company->name           = $request->input('name');
             $company->work_area_id   = (int) $request->input('work_area_id');
             $company->created_date   = $request->input('created_date');
@@ -28,7 +28,7 @@ class CompanyController extends Controller
             $company->longitude      = $request->input('longitude');
             $company->phone          = $request->input('phone');
             $company->email          = $request->input('email');
-            $company->employee_count = $request->input('employee_count', 0);
+            $company->employee_count = (int) $request->input('employee_count', 0);
 
             if ($request->hasFile('profile_photo')) {
                 $company->profile_photo = $request->file('profile_photo')
