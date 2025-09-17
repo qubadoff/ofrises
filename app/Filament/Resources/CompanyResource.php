@@ -28,6 +28,9 @@ class CompanyResource extends Resource
             ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -46,7 +49,7 @@ class CompanyResource extends Resource
                 TextColumn::make('status')->label('Status')->badge(),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make('deleted_at'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
