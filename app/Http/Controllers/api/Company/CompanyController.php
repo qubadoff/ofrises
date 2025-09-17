@@ -21,7 +21,7 @@ class CompanyController extends Controller
 
         $company = Company::query()->where('customer_id', $user->id)->get();
 
-        return CompanyResource::collection($company);
+        return CompanyResource::collection($company->load('missions', 'whyChooseUs'));
     }
     public function create(CompanyCreateRequest $request): JsonResponse
     {
