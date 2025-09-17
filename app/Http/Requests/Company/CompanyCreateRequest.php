@@ -23,7 +23,6 @@ class CompanyCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id'    => ['required', 'integer', 'exists:customers,id'],
             'name'           => ['required', 'string', 'max:255'],
             'work_area_id'   => ['required', 'integer', 'exists:work_areas,id'],
             'created_date'   => ['required', 'date'],
