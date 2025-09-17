@@ -408,7 +408,7 @@ class WorkerResource extends Resource
                             ->mutateRelationshipDataBeforeSaveUsing(function (array $data) {
                                 return $data;
                             }),
-                    ])->columns(),
+                    ])->columns(1),
 
 
                 Section::make('Soft Skills')
@@ -441,7 +441,7 @@ class WorkerResource extends Resource
                             ->mutateRelationshipDataBeforeSaveUsing(function (array $data) {
                                 return $data;
                             }),
-                    ])->columns(),
+                    ])->columns(1),
 
 
                 Section::make([
