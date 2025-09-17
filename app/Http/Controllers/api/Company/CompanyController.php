@@ -62,7 +62,7 @@ class CompanyController extends Controller
 
             return response()->json([
                 'message' => 'Company created successfully',
-                'company'    => new CompanyResource($company),
+                'company'    => new CompanyResource($company->load('missions')),
             ], 201);
 
         } catch (Exception $e) {
