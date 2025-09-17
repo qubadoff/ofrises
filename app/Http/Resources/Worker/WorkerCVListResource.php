@@ -83,7 +83,7 @@ class WorkerCVListResource extends JsonResource
                     'id'   => $type->id,
                     'name' => $type->name,
                 ]),
-            'status' => $this->status->getLable(),
+            'status' => WorkerStatusEnum::tryFrom( $this->status)->getLabel(),
         ];
     }
 }
