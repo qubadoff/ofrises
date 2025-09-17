@@ -71,7 +71,7 @@ class CompanyController extends Controller
 
             return response()->json([
                 'message' => 'Company created successfully',
-                'company'    => new CompanyResource($company->load('missions', 'why_choose_us')),
+                'company'    => new CompanyResource($company->load('missions', 'whyChooseUs')),
             ], 201);
 
         } catch (Exception $e) {
