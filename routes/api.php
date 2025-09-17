@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('company')->group(function () {
+        Route::post('/getCompany', [CompanyController::class, 'getCompany']);
         Route::post('/create', [CompanyController::class, 'create']);
     });
 });

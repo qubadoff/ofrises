@@ -9,11 +9,20 @@ use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
+    public function getCompany(): AnonymousResourceCollection
+    {
+        $user = Auth::user();
+
+        $company = Company::query()->where('customer_id', $user->id)->get();
+
+        return CompanyResource::collection($company);
+    }
     public function create(CompanyCreateRequest $request): JsonResponse
     {
         DB::beginTransaction();
