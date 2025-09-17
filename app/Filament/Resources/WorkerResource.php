@@ -375,39 +375,39 @@ class WorkerResource extends Resource
                     ->relationship('hobby', 'name')
                     ->multiple(),
 
-                    Repeater::make('hardSkills')
-                        ->relationship('hardSkills') // Worker modelindeki ilişki
-                        ->schema([
-                            Select::make('hardSkill')
-                                ->label('Hard Skill')
-                                ->relationship('hardSkill', 'name')
-                                ->required(),
-
-                            TextInput::make('degree')
-                                ->label('Degree')
-                                ->numeric()
-                                ->minValue(1)
-                                ->maxValue(5)
-                                ->required(),
-                        ])
-                        ->columns(),
-
-                    Repeater::make('softSkills')
-                        ->relationship('softSkills')
-                        ->schema([
-                            Select::make('softSkill')
-                                ->label('Soft Skill')
-                                ->relationship('softSkill', 'name')
-                                ->required(),
-
-                            TextInput::make('degree')
-                                ->label('Degree')
-                                ->numeric()
-                                ->minValue(1)
-                                ->maxValue(5)
-                                ->required(),
-                        ])
-                        ->columns(),
+//                    Repeater::make('hardSkills')
+//                        ->relationship('hardSkills') // Worker modelindeki ilişki
+//                        ->schema([
+//                            Select::make('hardSkill')
+//                                ->label('Hard Skill')
+//                                ->relationship('hardSkill', 'name')
+//                                ->required(),
+//
+//                            TextInput::make('degree')
+//                                ->label('Degree')
+//                                ->numeric()
+//                                ->minValue(1)
+//                                ->maxValue(5)
+//                                ->required(),
+//                        ])
+//                        ->columns(),
+//
+//                    Repeater::make('softSkills')
+//                        ->relationship('softSkills')
+//                        ->schema([
+//                            Select::make('softSkill')
+//                                ->label('Soft Skill')
+//                                ->relationship('softSkill', 'name')
+//                                ->required(),
+//
+//                            TextInput::make('degree')
+//                                ->label('Degree')
+//                                ->numeric()
+//                                ->minValue(1)
+//                                ->maxValue(5)
+//                                ->required(),
+//                        ])
+//                        ->columns(),
 
                 ])->columns(3),
 
