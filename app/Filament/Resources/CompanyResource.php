@@ -8,6 +8,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -32,9 +33,19 @@ class CompanyResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('customer.name')->searchable(),
-                TextColumn::make('customer.surname')->searchable(),
+                TextColumn::make('customer.name')->label('Customer Name')->searchable(),
+                TextColumn::make('customer.surname')->label('Customer Surname')->searchable(),
                 TextColumn::make('name')->searchable(),
+                TextColumn::make('workArea.name')->label('Work Area')->searchable(),
+                TextColumn::make('created_date')->sortable()->date(),
+                TextColumn::make('location')->label('Location')->searchable(),
+                TextColumn::make('latitude')->label('Latitude')->searchable(),
+                TextColumn::make('longitude')->label('Longitude')->searchable(),
+                TextColumn::make('phone')->label('Phone')->searchable(),
+                TextColumn::make('email')->label('Email')->searchable(),
+                TextColumn::make('employee_count')->label('Employee count')->sortable(),
+                ImageColumn::make('profile_photo')->label('Profile Photo'),
+                TextColumn::make('status')->label('Status')->badge(),
             ])
             ->filters([
                 //
