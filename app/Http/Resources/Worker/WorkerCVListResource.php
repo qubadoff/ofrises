@@ -19,6 +19,7 @@ class WorkerCVListResource extends JsonResource
             'name' => $this->customer->name,
             'surname' => $this->customer->surname,
             'email' => $this->customer->email,
+            'phone' => $this->customer->phone,
         ];
     }
 }
