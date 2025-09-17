@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\Auth\AuthController;
+use App\Http\Controllers\api\Company\CompanyController;
 use App\Http\Controllers\api\Customer\CustomerController;
 use App\Http\Controllers\api\Support\SupportController;
 use App\Http\Controllers\api\Worker\WorkerController;
@@ -58,5 +59,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/softSkills', [WorkerController::class, 'softSkills']);
             Route::get('/hardSkills', [WorkerController::class, 'hardSkills']);
         });
+    });
+
+    Route::prefix('company')->group(function () {
+        Route::post('/create', [CompanyController::class, 'create']);
     });
 });
