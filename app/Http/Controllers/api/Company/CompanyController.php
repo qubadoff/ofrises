@@ -19,7 +19,10 @@ class CompanyController extends Controller
     {
         $user = Auth::user();
 
-        $company = Company::query()->where('customer_id', $user->id)->get();
+        $company = Company::query()
+            ->where('customer_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return CompanyResource::collection($company->load('missions', 'whyChooseUs'));
     }
