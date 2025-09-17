@@ -89,16 +89,6 @@ class Worker extends Model
         return $this->belongsTo(Hobby::class, 'hobby_id');
     }
 
-    public function hardSkill(): BelongsTo
-    {
-        return $this->belongsTo(HardSkill::class, 'hard_skill_id');
-    }
-
-    public function softSkill(): BelongsTo
-    {
-        return $this->belongsTo(SoftSkill::class, 'soft_skill_id');
-    }
-
     public function educations(): HasMany
     {
         return $this->hasMany(WorkerEducation::class, 'worker_id');

@@ -6,6 +6,7 @@ use App\Enum\Worker\WorkerStatusEnum;
 use App\Filament\Resources\WorkerResource\Pages;
 use App\Models\Customer;
 use App\Models\EducationType;
+use App\Models\HardSkill;
 use App\Models\Language;
 use App\Models\LanguageLevel;
 use App\Models\WorkArea;
@@ -374,42 +375,41 @@ class WorkerResource extends Resource
                     Select::make('hobby_id')
                     ->relationship('hobby', 'name')
                     ->multiple(),
-
-//                    Repeater::make('hardSkills')
-//                        ->relationship('hardSkills') // Worker modelindeki ilişki
-//                        ->schema([
-//                            Select::make('hardSkill')
-//                                ->label('Hard Skill')
-//                                ->relationship('hardSkill', 'name')
-//                                ->required(),
-//
-//                            TextInput::make('degree')
-//                                ->label('Degree')
-//                                ->numeric()
-//                                ->minValue(1)
-//                                ->maxValue(5)
-//                                ->required(),
-//                        ])
-//                        ->columns(),
-//
-//                    Repeater::make('softSkills')
-//                        ->relationship('softSkills')
-//                        ->schema([
-//                            Select::make('softSkill')
-//                                ->label('Soft Skill')
-//                                ->relationship('softSkill', 'name')
-//                                ->required(),
-//
-//                            TextInput::make('degree')
-//                                ->label('Degree')
-//                                ->numeric()
-//                                ->minValue(1)
-//                                ->maxValue(5)
-//                                ->required(),
-//                        ])
-//                        ->columns(),
-
                 ])->columns(3),
+
+                Section::make('Hard Skills')
+                    ->schema([
+                        Repeater::make('hardSkills')
+                            ->relationship('hardSkills') // İlişki ismi modeldekiyle aynı olmalı
+                            ->label('Hard Skills')
+                            ->defaultItems(0)
+                            ->addActionLabel('Add Hard Skill')
+                            ->schema([
+                                Select::make('id') // belongsToMany için anahtar sütun
+                                ->label('Hard Skill')
+                                    ->options(HardSkill::query()
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id'))
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+
+                                TextInput::make('degree')
+                                    ->label('Level')
+                                    ->numeric()
+                                    ->required(),
+                            ])
+                            ->columns(2)
+                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data) {
+                                return $data;
+                            })
+                            ->mutateRelationshipDataBeforeSaveUsing(function (array $data) {
+                                return $data;
+                            }),
+                    ])
+                    ->columns(1),
+
 
                 Section::make([
                     TextArea::make('description')->nullable(),
