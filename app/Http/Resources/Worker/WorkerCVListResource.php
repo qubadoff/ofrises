@@ -87,6 +87,10 @@ class WorkerCVListResource extends JsonResource
                 'id'   => $skill->id,
                 'name' => $skill->name,
             ]),
+            'soft_skills' => $this->softSkills->map(fn ($skill) => [
+                'id'   => $skill->id,
+                'name' => $skill->name,
+            ]),
             'status' => WorkerStatusEnum::tryFrom( $this->status->value)->getLabel(),
         ];
     }
