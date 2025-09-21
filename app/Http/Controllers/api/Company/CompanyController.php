@@ -19,7 +19,7 @@ class CompanyController extends Controller
 {
     public function companyTypeList(): JsonResponse
     {
-        $companyTypeList = CompanyType::all(['id', 'name', 'icon']);
+        $companyTypeList = CompanyType::all(['id', 'name']);
 
         $data = $companyTypeList->map(function ($companyType) {
             return [
