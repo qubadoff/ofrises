@@ -4,7 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CompanyResource\Pages;
 use App\Models\Company;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,8 +29,21 @@ class CompanyResource extends Resource
         return $form
             ->schema([
                 Section::make([
-
+                    Select::make('company_type')->relationship('companyType', 'name')->required(),
+                    TextInput::make('name')->required(),
+                    Select::make('work_area_id')->relationship('workArea', 'name')->required(),
+                    DatePicker::make('created_date')->required(),
+                    TextInput::make('location')->required(),
+                    TextInput::make('latitude')->required(),
+                    TextInput::make('longitude')->required(),
+                    TextInput::make('phone')->required(),
+                    TextInput::make('email')->email()->required(),
+                    TextInput::make('employee_count')->numeric()->required(),
                 ]),
+                Section::make([
+                    FileUpload::make('profile_photo')->image()->required()->openable()->downloadable(),
+                    FileUpload::make('media')->multiple()->required()->openable()->downloadable(),
+                ])
             ]);
     }
 

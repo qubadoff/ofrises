@@ -40,4 +40,9 @@ class Company extends Model
     {
         return $this->hasMany(CompanyWhyChooseUs::class);
     }
+
+    public function companyType(): BelongsTo
+    {
+        return $this->belongsTo(CompanyType::class);
+    }
 }
