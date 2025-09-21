@@ -6,6 +6,7 @@ use App\Filament\Resources\CompanyResource\Pages;
 use App\Models\Company;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -40,6 +41,24 @@ class CompanyResource extends Resource
                     TextInput::make('email')->email()->required(),
                     TextInput::make('employee_count')->numeric()->required(),
                 ])->columns(5),
+                Section::make('Missions')
+                    ->schema([
+                        Repeater::make('missions')
+                            ->relationship('missions') // İlişki ismi modeldekiyle aynı olmalı
+                            ->label('Mission')
+                            ->defaultItems(0)
+                            ->addActionLabel('Add Mission')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Name')
+                                    ->required(),
+
+                                TextInput::make('description')
+                                    ->label('Description')
+                                    ->required(),
+                            ])
+                            ->columns(),
+                    ])->columns(1),
                 Section::make([
                     FileUpload::make('profile_photo')->image()->required()->openable()->downloadable(),
                     FileUpload::make('media')->multiple()->required()->openable()->downloadable(),
