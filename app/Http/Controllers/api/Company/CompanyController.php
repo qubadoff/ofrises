@@ -35,7 +35,7 @@ class CompanyController extends Controller
         try {
             $company = new Company();
             $company->customer_id    = Auth::user()->id;
-            $company->company_type_id = $request->input('company_type_id');
+            $company->company_type = $request->input('company_type_id');
             $company->name           = $request->input('name');
             $company->work_area_id   = (int) $request->input('work_area_id');
             $company->created_date   = $request->input('created_date');
@@ -135,7 +135,7 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Photos Updated Successfully',
                 'company' => new CompanyResource($company),
-            ], 200);
+            ]);
 
         } catch (Exception $e) {
             return response()->json([
