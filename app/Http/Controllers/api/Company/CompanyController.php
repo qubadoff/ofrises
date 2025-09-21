@@ -9,6 +9,7 @@ use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class CompanyController extends Controller
 
         return CompanyResource::collection($company->load('missions', 'whyChooseUs'));
     }
+
     public function create(CompanyCreateRequest $request): JsonResponse
     {
         DB::beginTransaction();
@@ -33,6 +35,7 @@ class CompanyController extends Controller
         try {
             $company = new Company();
             $company->customer_id    = Auth::user()->id;
+            $company->company_type_id = $request->input('company_type_id');
             $company->name           = $request->input('name');
             $company->work_area_id   = (int) $request->input('work_area_id');
             $company->created_date   = $request->input('created_date');
@@ -42,38 +45,25 @@ class CompanyController extends Controller
             $company->phone          = $request->input('phone');
             $company->email          = $request->input('email');
             $company->employee_count = (int) $request->input('employee_count', 0);
-
-            if ($request->hasFile('profile_photo')) {
-                $company->profile_photo = $request->file('profile_photo')
-                    ->store('companies/profile_photos', 'public');
-            }
-
-            $mediaFiles = [];
-            if ($request->hasFile('media')) {
-                foreach ($request->file('media') as $file) {
-                    $mediaFiles[] = $file->store('companies/media', 'public');
-                }
-            }
-            $company->media = $mediaFiles;
-
-            $company->status = CompanyStatusEnum::PENDING->value;
+            $company->status         = CompanyStatusEnum::PENDING->value;
 
             $company->save();
 
             if ($request->has('missions') && is_array($request->missions)) {
                 foreach ($request->missions as $mission) {
                     $company->missions()->create([
-                        'company_id' => $company->id,
-                        'name' => $mission['name'] ?? null,
+                        'company_id'  => $company->id,
+                        'name'        => $mission['name'] ?? null,
                         'description' => $mission['description'] ?? null,
                     ]);
                 }
             }
 
+            // Why Choose Us
             if ($request->has('why_choose_us') && is_array($request->why_choose_us)) {
                 foreach ($request->why_choose_us as $item) {
                     $company->whyChooseUs()->create([
-                        'name' => $item['name'] ?? null,
+                        'name'        => $item['name'] ?? null,
                         'description' => $item['description'] ?? null,
                     ]);
                 }
@@ -83,7 +73,7 @@ class CompanyController extends Controller
 
             return response()->json([
                 'message' => 'Company created successfully',
-                'company'    => new CompanyResource($company->load('missions', 'whyChooseUs')),
+                'company' => new CompanyResource($company->load('missions', 'whyChooseUs')),
             ], 201);
 
         } catch (Exception $e) {
@@ -95,4 +85,64 @@ class CompanyController extends Controller
             ], 500);
         }
     }
+
+    public function createImages(Request $request): JsonResponse
+    {
+        $request->validate([
+            'profile_photo' => ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg', 'max:5800'],
+            'media' => ['nullable', 'array'],
+            'media.*' => [
+                'file',
+                'max:50000',
+                function ($attribute, $value, $fail) {
+                    $mime = $value->getMimeType();
+                    if (! in_array($mime, [
+                        'image/jpeg', 'image/png', 'image/jpg',
+                        'video/mp4', 'video/quicktime', 'video/x-msvideo'
+                    ])) {
+                        $fail($attribute.' only jpeg, png, jpg, mp4, mov, avi.');
+                    }
+                }
+            ],
+        ]);
+
+        try {
+            $company = Company::query()->where('customer_id', Auth::user()->id)
+                ->latest('id')
+                ->first();
+
+            if (! $company) {
+                return response()->json([
+                    'message' => 'Company Not Found',
+                ], 422);
+            }
+
+            if ($request->hasFile('profile_photo')) {
+                $company->profile_photo = $request->file('profile_photo')
+                    ->store('companies/profile_photos', 'public');
+            }
+
+            if ($request->hasFile('media')) {
+                $mediaFiles = [];
+                foreach ($request->file('media') as $file) {
+                    $mediaFiles[] = $file->store('companies/media', 'public');
+                }
+                $company->media = $mediaFiles;
+            }
+
+            $company->save();
+
+            return response()->json([
+                'message' => 'Photos Updated Successfully',
+                'company' => new CompanyResource($company),
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Unknown Error !',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

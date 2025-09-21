@@ -23,6 +23,7 @@ class CompanyCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'company_type_id' => ['required', 'integer', 'exists:company_types,id'],
             'name'           => ['required', 'string', 'max:255'],
             'work_area_id'   => ['required', 'integer', 'exists:work_areas,id'],
             'created_date'   => ['required', 'date'],
@@ -32,22 +33,6 @@ class CompanyCreateRequest extends FormRequest
             'phone'          => ['required', 'string', 'max:50'],
             'email'          => ['required', 'email', 'max:255'],
             'employee_count' => ['nullable', 'integer', 'min:0'],
-            'profile_photo'  => ['required', 'file', 'image', 'mimes:jpeg,png,jpg', 'max:5800'],
-
-            'media'          => ['nullable', 'array'],
-            'media.*'        => [
-                'file',
-                'max:20480', // 20MB limit
-                function ($attribute, $value, $fail) {
-                    $mime = $value->getMimeType();
-                    if (! in_array($mime, [
-                        'image/jpeg', 'image/png', 'image/jpg',
-                        'video/mp4', 'video/quicktime', 'video/x-msvideo'
-                    ])) {
-                        $fail($attribute.' sadece jpeg, png, jpg, mp4, mov, avi olabilir.');
-                    }
-                }
-            ],
 
             'missions'       => ['nullable', 'array'],
             'missions.*.name'        => ['nullable', 'string', 'max:255'],

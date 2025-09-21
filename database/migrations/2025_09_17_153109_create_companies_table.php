@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('email');
             $table->integer('employee_count')->default(0);
-            $table->text('profile_photo');
+            $table->text('profile_photo')->nullable();
             $table->longText('media')->nullable();
             $table->integer('status')->default(CompanyStatusEnum::PENDING->value);
             $table->timestamps();

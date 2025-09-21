@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LanguageResource\Pages;
-use App\Models\Language;
+use App\Filament\Resources\CompanyTypeResource\Pages;
+use App\Models\CompanyType;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
@@ -12,13 +12,13 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class LanguageResource extends Resource
+class CompanyTypeResource extends Resource
 {
     use Translatable;
 
-    protected static ?string $model = Language::class;
+    protected static ?string $model = CompanyType::class;
 
-    protected static ?string $navigationGroup = 'Workers';
+    protected static ?string $navigationGroup = 'Company';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -62,9 +62,9 @@ class LanguageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLanguages::route('/'),
-            'create' => Pages\CreateLanguage::route('/create'),
-            'edit' => Pages\EditLanguage::route('/{record}/edit'),
+            'index' => Pages\ListCompanyTypes::route('/'),
+            'create' => Pages\CreateCompanyType::route('/create'),
+            'edit' => Pages\EditCompanyType::route('/{record}/edit'),
         ];
     }
 }
