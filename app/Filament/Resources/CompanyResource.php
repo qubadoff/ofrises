@@ -59,6 +59,24 @@ class CompanyResource extends Resource
                             ])
                             ->columns(),
                     ])->columns(1),
+                Section::make('Why Choose Us')
+                    ->schema([
+                        Repeater::make('whyChooseUs')
+                            ->relationship('whyChooseUs') // İlişki ismi modeldekiyle aynı olmalı
+                            ->label('Why Choose Us')
+                            ->defaultItems(0)
+                            ->addActionLabel('Add Why Choose Us')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Name')
+                                    ->required(),
+
+                                TextInput::make('description')
+                                    ->label('Description')
+                                    ->required(),
+                            ])
+                            ->columns(),
+                    ])->columns(1),
                 Section::make([
                     FileUpload::make('profile_photo')->image()->required()->openable()->downloadable(),
                     FileUpload::make('media')->multiple()->required()->openable()->downloadable(),
