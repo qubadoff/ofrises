@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Company\CompanyCreateRequest;
 use App\Http\Resources\Company\CompanyResource;
 use App\Models\Company;
+use App\Models\CompanyType;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,20 @@ use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
+    public function companyTypeList(): JsonResponse
+    {
+        $companyTypeList = CompanyType::all(['id', 'name', 'icon']);
+
+        $data = $companyTypeList->map(function ($companyType) {
+            return [
+                'id' => $companyType->id,
+                'name' => $companyType->name,
+            ];
+        });
+
+        return response()->json($data);
+    }
+
     public function getCompany(): AnonymousResourceCollection
     {
         $user = Auth::user();
