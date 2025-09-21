@@ -39,11 +39,11 @@ class CompanyResource extends Resource
                     TextInput::make('phone')->required(),
                     TextInput::make('email')->email()->required(),
                     TextInput::make('employee_count')->numeric()->required(),
-                ]),
+                ])->columns(5),
                 Section::make([
                     FileUpload::make('profile_photo')->image()->required()->openable()->downloadable(),
                     FileUpload::make('media')->multiple()->required()->openable()->downloadable(),
-                ])
+                ])->columns(),
             ]);
     }
 
