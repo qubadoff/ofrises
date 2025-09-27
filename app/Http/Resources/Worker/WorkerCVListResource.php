@@ -91,11 +91,15 @@ class WorkerCVListResource extends JsonResource
                 'id'   => $skill->id,
                 'name' => $skill->name,
             ]),
-            'qr_code' => $this->WorkerQrCode ? [
-                'id'   => $this->WorkerQrCode->id,
-                'qrCode' => $this->WorkerQrCode->qr_code,
-                'qrCode_image' => url('/') . "/storage/" . $this->WorkerQrCode->qr_code_image,
-            ] : null,
+            'qr_codes' => $this->WorkerQrCode->isNotEmpty()
+                ? $this->WorkerQrCode->map(function($qr) {
+                    return [
+                        'id'            => $qr->id,
+                        'qrCode'        => $qr->qr_code,
+                        'qrCode_image'  => url('/') . "/storage/" . $qr->qr_code_image,
+                    ];
+                })
+                : [],
             'status' => WorkerStatusEnum::tryFrom( $this->status->value)->getLabel(),
         ];
     }
