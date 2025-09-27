@@ -20,11 +20,15 @@ class CompanyController extends Controller
     public function list(Request $request): AnonymousResourceCollection
     {
         $search = $request->input('search');
+        $companyType = $request->input('company_type');
 
         $data = Company::query()
             ->where('status', CompanyStatusEnum::ACTIVE->value)
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%");
+            })
+            ->when($companyType, function ($query, $companyType) {
+                $query->where('company_type', $companyType);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(20);
