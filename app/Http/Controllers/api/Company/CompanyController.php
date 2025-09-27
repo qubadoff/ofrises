@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
+    public function list(): AnonymousResourceCollection
+    {
+        $data = Company::query()->where('status', COmpanyStatusEnum::ACTIVE->value)->paginate(20);
+
+        return CompanyResource::collection($data);
+    }
     public function companyTypeList(): JsonResponse
     {
         $companyTypeList = CompanyType::query()->orderBy('created_at', 'desc')->get(['id', 'name']);
