@@ -268,7 +268,7 @@ class WorkerRequestController extends Controller
             'worker_id' => 'required|integer|exists:workers,id',
         ]);
 
-        $worker = Worker::query()->findOrFail($request->input('worker_id'));
+        $worker = Worker::query()->where('status', WorkerStatusEnum::ACTIVE->value)->findOrFail($request->input('worker_id'));
 
         return new WorkerCVListResource($worker);
     }
