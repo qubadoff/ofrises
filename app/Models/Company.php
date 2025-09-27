@@ -43,6 +43,6 @@ class Company extends Model
 
     public function companyType(): BelongsTo
     {
-        return $this->belongsTo(CompanyType::class);
+        return $this->belongsTo(CompanyType::class, 'company_type', 'id');
     }
 }
