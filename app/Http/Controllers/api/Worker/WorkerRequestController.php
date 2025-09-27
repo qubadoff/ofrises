@@ -261,4 +261,15 @@ class WorkerRequestController extends Controller
 
         return WorkerCVListResource::collection($workerCV);
     }
+
+    public function findWithQR(Request $request): WorkerCVListResource
+    {
+        $request->validate([
+            'worker_id' => 'required|integer|exists:workers,id',
+        ]);
+
+        $worker = Worker::query()->findOrFail($request->input('worker_id'));
+
+        return new WorkerCVListResource($worker);
+    }
 }

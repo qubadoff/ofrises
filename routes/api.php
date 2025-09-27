@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/workerCVList', [WorkerRequestController::class, 'workerCVList']);
         Route::post('/create', [WorkerRequestController::class, 'create']);
         Route::post('/uploadPhotoAndVideo', [WorkerRequestController::class, 'uploadPhotoAndVideo']);
+        Route::post('/findWithQR', [WorkerRequestController::class, 'findWithQR']);
         Route::middleware(SetLocale::class)->group(function () {
             Route::get('/workArea', [WorkerController::class, 'workArea']);
             Route::get('/workType', [WorkerController::class, 'workType']);
