@@ -22,7 +22,7 @@ class WorkerObserver
 
         $fileName = "qrCodes/worker_{$worker->id}.png";
 
-        Storage::put($fileName, $qrImage);
+        Storage::disk('public')->put($fileName, $qrImage);
 
         WorkerQRCode::query()->create([
             'worker_id'     => $worker->id,
