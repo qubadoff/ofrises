@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\Company\CompanyStatusEnum;
 use App\Filament\Resources\CompanyResource\Pages;
 use App\Models\Company;
 use Filament\Forms\Components\DatePicker;
@@ -40,6 +41,14 @@ class CompanyResource extends Resource
                     TextInput::make('phone')->required(),
                     TextInput::make('email')->email()->required(),
                     TextInput::make('employee_count')->numeric()->required(),
+                    Select::make('status')
+                        ->options([
+                            CompanyStatusEnum::PENDING->value => CompanyStatusEnum::PENDING->getLabel(),
+                            CompanyStatusEnum::ACTIVE->value => CompanyStatusEnum::ACTIVE->getLabel(),
+                            CompanyStatusEnum::INACTIVE->value => CompanyStatusEnum::INACTIVE->getLabel(),
+                            CompanyStatusEnum::REJECTED->value => CompanyStatusEnum::REJECTED->getLabel(),
+                            CompanyStatusEnum::DELETED->value => CompanyStatusEnum::DELETED->getLabel(),
+                        ])->default(CompanyStatusEnum::PENDING->value)->required(),
                 ])->columns(5),
                 Section::make('Missions')
                     ->schema([
