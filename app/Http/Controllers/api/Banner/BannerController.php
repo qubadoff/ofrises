@@ -11,6 +11,7 @@ class BannerController extends Controller
 {
     public function list(): AnonymousResourceCollection
     {
-        return BannerResource::collection(Banner::all());
+        $banners = Banner::query()->orderBy('created_at', 'desc')->get();
+        return BannerResource::collection($banners);
     }
 }
