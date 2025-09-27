@@ -21,6 +21,7 @@ class CompanyController extends Controller
     {
         $search = $request->input('search');
         $companyType = $request->input('company_type');
+        $workAreaId = $request->input('work_area_id');
 
         $data = Company::query()
             ->where('status', CompanyStatusEnum::ACTIVE->value)
@@ -30,11 +31,15 @@ class CompanyController extends Controller
             ->when($companyType, function ($query, $companyType) {
                 $query->where('company_type', $companyType);
             })
+            ->when($workAreaId, function ($query, $workAreaId) {
+                $query->where('work_area_id', $workAreaId);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return CompanyResource::collection($data);
     }
+
 
 
     public function companyTypeList(): JsonResponse
