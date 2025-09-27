@@ -17,15 +17,22 @@ use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
-    public function list(): AnonymousResourceCollection
+    public function list(Request $request): AnonymousResourceCollection
     {
+        $search = $request->input('search');
+
         $data = Company::query()
-            ->where('status', COmpanyStatusEnum::ACTIVE->value)
+            ->where('status', CompanyStatusEnum::ACTIVE->value)
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
         return CompanyResource::collection($data);
     }
+
+
     public function companyTypeList(): JsonResponse
     {
         $companyTypeList = CompanyType::query()->orderBy('created_at', 'desc')->get(['id', 'name']);
