@@ -133,6 +133,6 @@ class Worker extends Model
 
     public function WorkerQrCode(): HasMany
     {
-        return $this->hasMany(WorkerQrCode::class, 'worker_id');
+        return $this->hasMany(WorkerQRCode::class, 'worker_id');
     }
 }
