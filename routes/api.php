@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\Auth\AuthController;
+use App\Http\Controllers\api\Banner\BannerController;
 use App\Http\Controllers\api\Company\CompanyController;
 use App\Http\Controllers\api\Customer\CustomerController;
 use App\Http\Controllers\api\Support\SupportController;
@@ -67,5 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/getCompany', [CompanyController::class, 'getCompany']);
         Route::post('/create', [CompanyController::class, 'create']);
         Route::post('/createImages', [CompanyController::class, 'createImages']);
+    });
+
+    Route::prefix('banners')->group(function () {
+        Route::get('/list', [BannerController::class, 'list']);
     });
 });
