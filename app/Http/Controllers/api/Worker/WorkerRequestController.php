@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\Worker;
 
 use App\Enum\Worker\WorkerStatusEnum;
+use App\Filament\Resources\WorkerResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Worker\WorkerCreateRequest;
 use App\Http\Resources\Worker\WorkerCVListResource;
@@ -251,6 +252,13 @@ class WorkerRequestController extends Controller
                 ],
             ]);
         });
+    }
+
+    public function list(): AnonymousResourceCollection
+    {
+        $list = Worker::query()->where('status', WorkerStatusEnum::ACTIVE->value)->orderBy('created_at', 'desc')->paginate(20);
+
+        return WorkerCVListResource::collection($list);
     }
 
     public function workerCVList(): AnonymousResourceCollection

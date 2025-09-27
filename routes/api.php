@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('workers')->group(function () {
-        Route::get('/list', [WorkerController::class, 'list']);
+        Route::get('/list', [WorkerRequestController::class, 'list']);
         Route::get('/workerCVList', [WorkerRequestController::class, 'workerCVList']);
         Route::post('/create', [WorkerRequestController::class, 'create']);
         Route::post('/uploadPhotoAndVideo', [WorkerRequestController::class, 'uploadPhotoAndVideo']);
