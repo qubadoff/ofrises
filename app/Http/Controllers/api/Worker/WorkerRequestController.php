@@ -254,9 +254,23 @@ class WorkerRequestController extends Controller
         });
     }
 
-    public function list(): AnonymousResourceCollection
+    public function list(Request $request): AnonymousResourceCollection
     {
-        $list = Worker::query()->where('status', WorkerStatusEnum::ACTIVE->value)->orderBy('created_at', 'desc')->paginate(20);
+        $search = $request->input('search');
+        $workAreas = $request->input('work_areas', []);
+
+        $list = Worker::query()
+            ->where('status', WorkerStatusEnum::ACTIVE->value)
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->when(!empty($workAreas), function ($query) use ($workAreas) {
+                $query->whereHas('workAreas', function ($q) use ($workAreas) {
+                    $q->whereIn('work_area_id', $workAreas);
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
 
         return WorkerCVListResource::collection($list);
     }
