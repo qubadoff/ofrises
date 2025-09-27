@@ -130,4 +130,9 @@ class Worker extends Model
         return $this->belongsToMany(SoftSkill::class, 'worker_soft_skill')
             ->withPivot(['customer_id', 'degree']);
     }
+
+    public function WorkerQrCode(): HasMany
+    {
+        return $this->hasMany(WorkerQrCode::class, 'worker_id');
+    }
 }

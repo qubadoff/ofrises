@@ -91,6 +91,11 @@ class WorkerCVListResource extends JsonResource
                 'id'   => $skill->id,
                 'name' => $skill->name,
             ]),
+            'qr_code' => $this->WorkerQrCode ? [
+                'id'   => $this->WorkerQrCode->id,
+                'qrCode' => $this->WorkerQrCode->qr_code,
+                'qrCode_image' => url('/') . "/storage/" . $this->WorkerQrCode->qr_code_image,
+            ] : null,
             'status' => WorkerStatusEnum::tryFrom( $this->status->value)->getLabel(),
         ];
     }
