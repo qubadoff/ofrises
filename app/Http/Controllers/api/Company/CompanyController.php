@@ -19,7 +19,10 @@ class CompanyController extends Controller
 {
     public function list(): AnonymousResourceCollection
     {
-        $data = Company::query()->where('status', COmpanyStatusEnum::ACTIVE->value)->paginate(20);
+        $data = Company::query()
+            ->where('status', COmpanyStatusEnum::ACTIVE->value)
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
 
         return CompanyResource::collection($data);
     }
